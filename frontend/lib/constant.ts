@@ -1,7 +1,8 @@
 import { IDock } from "@/types/dock.type";
 
 //Backend Polling & socket di port yg sama
-export const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+export const BASE_URL =
+  process.env.NEXT_PUBLIC_BACKEND_URL || "http://192.168.169.12:3000/antrian";
 
 export const DAYS = [
   "Senin",

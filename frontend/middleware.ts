@@ -32,18 +32,18 @@ export function middleware(req: NextRequest) {
   ];
 
   // 1. Jalur Bebas Hambatan (Public)
-  if (pathname === "/" || pathname.startsWith("/login")) {
+  if (pathname === "/antrian" || pathname.startsWith("/login")) {
     return NextResponse.next();
   }
 
   // 2. Helper Redirect
   const redirectToLogin = () => {
     // Karena pakai basePath: '/antrian', "/" ini akan mengarah ke domain.com/antrian/
-    return NextResponse.redirect(new URL("/", req.url));
+    return NextResponse.redirect(new URL("/antrian", req.url));
   };
 
   const redirectToForbidden = () => {
-    return NextResponse.redirect(new URL("/forbidden", req.url));
+    return NextResponse.redirect(new URL("/antrian/forbidden", req.url));
   };
 
   // 3. Cek Keberadaan Token

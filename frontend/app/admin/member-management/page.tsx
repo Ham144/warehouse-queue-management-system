@@ -424,7 +424,7 @@ const MemberManagementPage = () => {
                     setFilter({ ...filter, role: e.target.value })
                   }
                   defaultValue={"all"}
-                  className="select w-full max-w-xs "
+                  className="select w-full max-w-xs px-2"
                 >
                   <option disabled>Filter Role</option>
                   <option selected value={"all"}>

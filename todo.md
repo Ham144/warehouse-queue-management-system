@@ -69,8 +69,7 @@ start 12/11/2025
 [x] perbaikin tampilan supir yang lebih jelas
 [x] add: warehouse setting untuk ruling berbeda tiap warehouse
 [x] add: dashboard driver & vendor admin dengan endpoint sudah ada stats/...
-[] mod: race condition booking
-[] add: My Warehouse untuk library utama warehouse dan konfirmasinya (required: filter kompleks)
+[x] add: My Warehouse untuk library utama warehouse dan konfirmasinya (required: filter kompleks)
 
 # Meeting 28-01-2026
 
@@ -88,14 +87,14 @@ start 12/11/2025
 [x] fix: user tidak bisa dihapus
 [x] fix: error petunjuk tidak keluar saat kesalahan membuat account
 [x] add: import app user
+[x] add: perlu jenis VehicleType ada yang bisa masuk dan ada yang tidak bisa
 
+[] mod: race condition booking
 [] fix: Suspense yang masih di root layout, ini bakal buat app banyak nampil loading
 [] add: limit kubikasi => pakai template mobil berbeda aja, muatan 20%, 50%:
 Menentukan durasi bongkar mobil =
 vehicle.durasiBongkar × (0.3 + (1 − 0.3) × loadPercent/100)
 
-//update antrian booking
-[x] add: perlu jenis VehicleType ada yang bisa masuk dan ada yang tidak bisa
 
 sulit :
 [] fix: droppable canceled inventory masih belum sempurna

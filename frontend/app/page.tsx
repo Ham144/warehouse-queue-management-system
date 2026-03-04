@@ -96,7 +96,7 @@ export default function HomePage() {
   function statsMapping() {
     if (statsData) {
       setStats((prev) => {
-        return prev.map((stat) => {
+        return prev?.map((stat) => {
           return {
             ...stat,
             value: statsData[stat.key],
@@ -346,48 +346,49 @@ export default function HomePage() {
         <section className="py-12 md:py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {stats.map((stat, index) => (
-                <div
-                  key={stat.label}
-                  className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
-                >
-                  <div className="flex items-center justify-between mb-4">
-                    <div
-                      className={`p-3 rounded-xl ${
-                        index === 0
-                          ? "bg-blue-100 dark:bg-blue-900/30"
-                          : index === 1
-                            ? "bg-green-100 dark:bg-green-900/30"
-                            : index === 2
-                              ? "bg-purple-100 dark:bg-purple-900/30"
-                              : "bg-orange-100 dark:bg-orange-900/30"
-                      }`}
-                    >
-                      <stat.icon
-                        className={`w-6 h-6 ${
+              {!isLoadingStats &&
+                stats?.map((stat, index) => (
+                  <div
+                    key={stat.label}
+                    className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div
+                        className={`p-3 rounded-xl ${
                           index === 0
-                            ? "text-blue-600 dark:text-blue-400"
+                            ? "bg-blue-100 dark:bg-blue-900/30"
                             : index === 1
-                              ? "text-green-600 dark:text-green-400"
+                              ? "bg-green-100 dark:bg-green-900/30"
                               : index === 2
-                                ? "text-purple-600 dark:text-purple-400"
-                                : "text-orange-600 dark:text-orange-400"
+                                ? "bg-purple-100 dark:bg-purple-900/30"
+                                : "bg-orange-100 dark:bg-orange-900/30"
                         }`}
-                      />
+                      >
+                        <stat.icon
+                          className={`w-6 h-6 ${
+                            index === 0
+                              ? "text-blue-600 dark:text-blue-400"
+                              : index === 1
+                                ? "text-green-600 dark:text-green-400"
+                                : index === 2
+                                  ? "text-purple-600 dark:text-purple-400"
+                                  : "text-orange-600 dark:text-orange-400"
+                          }`}
+                        />
+                      </div>
                     </div>
-                  </div>
 
-                  <h3 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                    {stat.value}
-                  </h3>
-                  <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
-                    {stat.label}
-                  </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    {stat.description}
-                  </p>
-                </div>
-              ))}
+                    <h3 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                      {stat.value}
+                    </h3>
+                    <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
+                      {stat.label}
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      {stat.description}
+                    </p>
+                  </div>
+                ))}
             </div>
           </div>
         </section>
@@ -405,7 +406,7 @@ export default function HomePage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {features.map((feature) => (
+              {features?.map((feature) => (
                 <Link
                   key={feature.title}
                   href={"/"}

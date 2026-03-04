@@ -56,4 +56,18 @@ export class ResponseReportsBookingDto {
     averageUnloadTime: TrendDto;
     noShows: TrendDto;
   };
+
+  @Expose()
+  kpi?: {
+    username: string;
+    vendor: string;
+    tanggalAktifitasTerakhir: Date;
+    jamAktifitasTerakhir: string;
+    FINISHED: number;
+    CANCELED: number;
+    IN_PROGRESS: number;
+    totalCreated: number;
+    perubahanLapangan: number;
+    qtyAll: number;
+  };
 }

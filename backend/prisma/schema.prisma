@@ -205,7 +205,7 @@ model Vendor {
 
 model MoveTrace {
   id String @unique() @default(uuid())
-  doer String 
+  doer String //ini beneran username bukan id
   bookingId String
   fromStatus String
   toStatus String

@@ -157,13 +157,15 @@ export class BookingController {
   @Authorization('ADMIN_ORGANIZATION', 'ADMIN_GUDANG', 'USER_ORGANIZATION')
   @Get('/admin-warehouse-reports')
   getStatsForVendor(
-    @Query() filter: { startDate: string; endDate: string },
+    @Query()
+    filter: { startDate: string; endDate: string; isKpiInclude: boolean },
     @Auth() userinfo: TokenPayload,
   ) {
     return this.bookingWarehouseService.adminReports(
       userinfo,
       filter.startDate,
       filter.endDate,
+      filter.isKpiInclude,
     );
   }
 

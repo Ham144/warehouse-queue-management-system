@@ -1197,10 +1197,11 @@ export class BookingWarehouseService {
     userinfo: TokenPayload,
     startDate: string,
     endDate: string,
+    isKpiInclude: boolean,
   ) {
     // Convert input dates
-    const end = new Date(endDate);
-    const start = new Date(startDate);
+    const start = new Date(`${startDate}T00:00:00.000Z`);
+    const end = new Date(`${endDate}T23:59:59.999Z`);
 
     // Get bookings within date range - FIX: gunakan createdAt seperti kode yang berhasil
     const bookings = await this.prismaService.booking.findMany({
@@ -1360,6 +1361,92 @@ export class BookingWarehouseService {
       };
     });
 
+    let kpi = null;
+
+    if (
+      [ROLE.USER_ORGANIZATION, ROLE.ADMIN_ORGANIZATION].includes(
+        userinfo.role,
+      ) &&
+      String(isKpiInclude) === 'true'
+    ) {
+      kpi = await this.prismaService.$queryRaw`
+        SELECT 
+            u."username",
+        COALESCE(u."vendorName", 'INTERNAL') AS "vendor",
+            mt."lastActivity",
+            CAST(COALESCE(mt."totalMovements", 0) AS INTEGER) AS "perubahan",
+            CAST(COUNT(b."id") AS INTEGER) AS "totalCreated",
+            CAST(COUNT(b."id") FILTER (WHERE b."status" = 'FINISHED') AS INTEGER) AS "completed",
+            CAST(COUNT(b."id") FILTER (WHERE b."status" = 'CANCELED') AS INTEGER) AS "canceled",
+            CAST(COUNT(b."id") FILTER (WHERE b."status" IN ('PENDING', 'IN_PROGRESS', 'UNLOADING')) AS INTEGER) AS "onProgress"
+        FROM "User" u
+        -- Menggunakan INNER JOIN agar hanya user yang ada di MoveTrace (punya aktivitas) yang muncul
+        INNER JOIN (
+            SELECT 
+                "doer", 
+                MAX("createdAt") AS "lastActivity",
+                COUNT(*) AS "totalMovements"
+            FROM "MoveTrace"
+            WHERE "createdAt" >= ${start}
+              AND "createdAt" <= ${end}
+            GROUP BY "doer"
+        ) mt ON u."username" = mt."doer"
+        LEFT JOIN "Booking" b ON u."username" = b."createByUsername" 
+            AND b."createdAt" >= ${start}
+            AND b."createdAt" <= ${end}
+        GROUP BY u."username", u."vendorName", mt."lastActivity", mt."totalMovements"
+        -- Mengurutkan berdasarkan total gabungan (QTY ALL)
+        ORDER BY (COALESCE(mt."totalMovements", 0) + COUNT(b."id")) DESC;
+      `;
+
+      if (kpi && kpi.length > 0) {
+        kpi = kpi
+          .map((item) => {
+            // Pastikan lastActivity ada sebelum diolah
+            if (!item.lastActivity) return null;
+
+            const dateObj = new Date(item.lastActivity);
+
+            // Format Tanggal (YYYY-MM-DD)
+            const tanggalAktifitasTerakhir = dateObj
+              .toISOString()
+              .split('T')[0];
+
+            // Format Jam (HH:mm) WIB
+            const jamAktifitasTerakhir = dateObj
+              .toLocaleString('id-ID', {
+                timeZone: 'Asia/Jakarta',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false,
+              })
+              .replace('.', ':');
+
+            // Kalkulasi total
+            const created = item.totalCreated || 0;
+            const perubahan = item.perubahan || 0;
+            const myTask_totalActivity = created + perubahan;
+
+            return {
+              username: item.username,
+              vendor: item.vendor, // Sudah dihandle COALESCE di SQL
+              tanggalAktifitasTerakhir,
+              jamAktifitasTerakhir,
+              FINISHED: item.completed || 0,
+              CANCELED: item.canceled || 0,
+              IN_PROGRESS: item.onProgress || 0,
+              totalCreated: created,
+              perubahanLapangan: perubahan,
+              qtyAll: myTask_totalActivity,
+            };
+          })
+          // Filter untuk membuang null jika ada data tanpa lastActivity
+          .filter((item) => item !== null)
+          // Urutkan berdasarkan QTY ALL Terbanyak
+          .sort((a, b) => b['QTY ALL'] - a['QTY ALL']);
+      }
+    }
+
     return plainToInstance(
       ResponseReportsBookingDto,
       {
@@ -1368,6 +1455,7 @@ export class BookingWarehouseService {
         noShows,
         totalBooking: bookings?.length || 0,
         dockPerformances,
+        kpi,
       },
       {
         excludeExtraneousValues: true,
@@ -1985,12 +2073,6 @@ export class BookingWarehouseService {
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
     return `${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}`;
-  };
-
-  private formatLocalTime = (date: Date): string => {
-    const hours = this.getLocalHours(date);
-    const minutes = this.getLocalMinutes(date);
-    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
   };
 
   private loopingAvoidBusyTime = (

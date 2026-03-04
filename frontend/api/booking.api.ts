@@ -72,14 +72,14 @@ export const BookingApi = {
   dragAndDrop: async (id: string, data: DragAndDropPayload) => {
     const res = await axiosInstance.put(
       `/api/booking/drag-and-drop/${id}`,
-      data
+      data,
     );
     return res.data;
   },
   updateBookingStatus: async (payload: UpdateBookingStatus) => {
     const res = await axiosInstance.patch(
       `/api/booking/updateStatus/${payload.id}`,
-      payload
+      payload,
     );
     return res.data;
   },
@@ -90,13 +90,13 @@ export const BookingApi = {
   },
   getStatsForAdminVendor: async (): Promise<VendorDashboardState> => {
     const res = await axiosInstance.get<VendorDashboardState>(
-      "/api/booking/stats/stats-for-admin-vendor"
+      "/api/booking/stats/stats-for-admin-vendor",
     );
     return res.data;
   },
   getStatsForUserOrganizations: async () => {
     const res = await axiosInstance.get(
-      "/api/booking/stats/stats-for-user-organizations"
+      "/api/booking/stats/stats-for-user-organizations",
     );
     return res.data;
   },
@@ -104,12 +104,13 @@ export const BookingApi = {
   adminWarehouseReports: async (params?: {
     startDate?: string;
     endDate?: string;
+    isKpiInclude: boolean;
   }) => {
     const res = await axiosInstance.get(
       "/api/booking/admin-warehouse-reports",
       {
         params,
-      }
+      },
     );
     return res.data;
   },
@@ -121,7 +122,7 @@ export const BookingApi = {
   //ini untuk admin/dashboards
   adminWarehouseDashboard: async (): Promise<DashboardState> => {
     const res = await axiosInstance.get<DashboardState>(
-      "/api/booking/admin-warehouse-dashboard"
+      "/api/booking/admin-warehouse-dashboard",
     );
     return res.data;
   },
