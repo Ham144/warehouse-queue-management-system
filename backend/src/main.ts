@@ -40,7 +40,7 @@ async function bootstrap() {
   // Global error filter (opsional)
   app.useGlobalFilters(new HttpExceptionFilter(), new PrismaExceptionFilter());
 
-  await app.listen(3001);
+  await app.listen(3001, '0.0.0.0');
   console.log('✓ Server listening on port 3001');
 }
 

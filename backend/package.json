@@ -81,15 +81,13 @@
       "json",
       "ts"
     ],
-    "rootDir": "test",
-    "testMatch": [
-      "**/*.e2e-spec.ts"
-    ],
+    "rootDir": "src",
+    "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "moduleNameMapper": {
-      "^src/(.*)$": "<rootDir>/../src/$1"
+      "^src/(.*)$": "<rootDir>/$1"
     },
     "collectCoverageFrom": [
       "**/*.(t|j)s"

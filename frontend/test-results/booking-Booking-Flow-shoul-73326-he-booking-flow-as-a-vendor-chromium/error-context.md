@@ -1,0 +1,255 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - button "Buka Messenger" [ref=e2] [cursor=pointer]:
+    - img [ref=e3]
+    - generic [ref=e5]: Buka Messenger
+  - navigation [ref=e7]:
+    - generic [ref=e9]:
+      - generic [ref=e11]:
+        - img [ref=e13]
+        - generic [ref=e19]:
+          - heading "Catur QueueRealtime" [level=1] [ref=e20]
+          - generic [ref=e23]: beta
+      - button "Login" [ref=e25] [cursor=pointer]:
+        - img [ref=e26]
+        - generic [ref=e29]: Login
+    - dialog [ref=e30]:
+      - generic [ref=e31]:
+        - generic [ref=e32]:
+          - heading "Login ke Sistem" [level=3] [ref=e33]
+          - paragraph [ref=e34]: Masuk ke portal Antrian Gudang
+        - generic [ref=e35]:
+          - button "Active Director" [ref=e36] [cursor=pointer]:
+            - img [ref=e37]
+            - generic [ref=e40]: Active Director
+          - button "App" [ref=e41] [cursor=pointer]:
+            - img [ref=e42]
+            - generic [ref=e46]: App
+        - generic [ref=e47]:
+          - generic [ref=e48]:
+            - text: Username
+            - textbox "ham" [ref=e49]: vendor
+          - generic [ref=e50]:
+            - text: Password
+            - textbox "******" [ref=e51]: Zxcv1234
+          - button "Login Sekarang" [active] [ref=e52] [cursor=pointer]
+          - link "Lupa Password ?" [ref=e54] [cursor=pointer]:
+            - /url: /forgot-password
+        - button "Tutup" [ref=e57] [cursor=pointer]
+      - region "Notifications alt+T"
+  - region "Notifications alt+T"
+  - main [ref=e58]:
+    - generic [ref=e61]:
+      - generic [ref=e62]:
+        - img [ref=e63]
+        - generic [ref=e66]: Catur Sukses Internasional
+      - heading "Sistem Antrian Gudang & Manajemen Unload Muatan" [level=1] [ref=e67]:
+        - text: Sistem Antrian Gudang & Manajemen
+        - generic [ref=e68]: Unload Muatan
+      - paragraph [ref=e69]: Kelola antrian vendor, jadwal bongkar muat, dan slot gudang dengan sistem terintegrasi yang efisien
+      - link "Mulai Order" [ref=e71] [cursor=pointer]:
+        - /url: /antrian/forbidden
+        - img [ref=e72]
+        - text: Mulai Order
+    - generic [ref=e77]:
+      - generic [ref=e78]:
+        - img [ref=e81]
+        - heading "10" [level=3] [ref=e84]
+        - paragraph [ref=e85]: Total Gudang Terdaftar
+        - paragraph [ref=e86]: Gudang aktif
+      - generic [ref=e87]:
+        - img [ref=e90]
+        - heading "9" [level=3] [ref=e92]
+        - paragraph [ref=e93]: Gate Aktif Terdaftar
+        - paragraph [ref=e94]: Kapasitas tersedia
+      - generic [ref=e95]:
+        - img [ref=e98]
+        - heading "0" [level=3] [ref=e100]
+        - paragraph [ref=e101]: IN PROGRESS Booking Hari Ini
+        - paragraph [ref=e102]: Kunjungan terjadwal
+      - generic [ref=e103]:
+        - img [ref=e106]
+        - heading "0" [level=3] [ref=e109]
+        - paragraph [ref=e110]: Finish Booking
+        - paragraph [ref=e111]: Keseluruhan
+    - generic [ref=e113]:
+      - generic [ref=e114]:
+        - heading "Modul Sistem Terintegrasi" [level=2] [ref=e115]
+        - paragraph [ref=e116]: Akses semua fitur manajemen antrian dan operasional gudang dalam satu platform
+      - generic [ref=e117]:
+        - link "Booking Management Atur jadwal kunjungan vendor dengan pemilihan warehouse dan slot" [ref=e118] [cursor=pointer]:
+          - /url: /antrian
+          - generic [ref=e119]:
+            - img [ref=e121]
+            - heading "Booking Management" [level=3] [ref=e125]
+          - paragraph [ref=e126]: Atur jadwal kunjungan vendor dengan pemilihan warehouse dan slot
+        - link "Warehouse Setup Kelola data gudang, kapasitas, dan informasi operasional" [ref=e127] [cursor=pointer]:
+          - /url: /antrian
+          - generic [ref=e128]:
+            - img [ref=e130]
+            - heading "Warehouse Setup" [level=3] [ref=e133]
+          - paragraph [ref=e134]: Kelola data gudang, kapasitas, dan informasi operasional
+        - link "Slot Management Atur dock bongkar muat dan status ketersediaan slot" [ref=e135] [cursor=pointer]:
+          - /url: /antrian
+          - generic [ref=e136]:
+            - img [ref=e138]
+            - heading "Slot Management" [level=3] [ref=e142]
+          - paragraph [ref=e143]: Atur dock bongkar muat dan status ketersediaan slot
+        - link "Vehicle Setup Daftar kendaraan vendor dengan estimasi waktu bongkar muat" [ref=e144] [cursor=pointer]:
+          - /url: /antrian
+          - generic [ref=e145]:
+            - img [ref=e147]
+            - heading "Vehicle Setup" [level=3] [ref=e151]
+          - paragraph [ref=e152]: Daftar kendaraan vendor dengan estimasi waktu bongkar muat
+        - link "Queue Monitoring Pantau antrian real-time dan estimasi waktu penyelesaian" [ref=e153] [cursor=pointer]:
+          - /url: /antrian
+          - generic [ref=e154]:
+            - img [ref=e156]
+            - heading "Queue Monitoring" [level=3] [ref=e158]
+          - paragraph [ref=e159]: Pantau antrian real-time dan estimasi waktu penyelesaian
+        - link "User Management Kelola akses pengguna dan role berdasarkan kebutuhan" [ref=e160] [cursor=pointer]:
+          - /url: /antrian
+          - generic [ref=e161]:
+            - img [ref=e163]
+            - heading "User Management" [level=3] [ref=e175]
+          - paragraph [ref=e176]: Kelola akses pengguna dan role berdasarkan kebutuhan
+        - 'link "Live Queue Drag & Drop Drag booking antar status: IN_PROGRESS → UNLOADING, DELAYED → UNLOADING, antar dock, dan canceled" [ref=e177] [cursor=pointer]':
+          - /url: /antrian
+          - generic [ref=e178]:
+            - img [ref=e180]
+            - heading "Live Queue Drag & Drop" [level=3] [ref=e185]
+          - paragraph [ref=e186]: "Drag booking antar status: IN_PROGRESS → UNLOADING, DELAYED → UNLOADING, antar dock, dan canceled"
+        - link "Busy Time Analytics Analisis waktu sibuk warehouse dengan visualisasi grafik dan prediksi" [ref=e187] [cursor=pointer]:
+          - /url: /antrian
+          - generic [ref=e188]:
+            - img [ref=e190]
+            - heading "Busy Time Analytics" [level=3] [ref=e192]
+          - paragraph [ref=e193]: Analisis waktu sibuk warehouse dengan visualisasi grafik dan prediksi
+        - link "Complete Reports Laporan lengkap untuk admin dan vendor dengan export Excel/PDF" [ref=e194] [cursor=pointer]:
+          - /url: /antrian
+          - generic [ref=e195]:
+            - img [ref=e197]
+            - heading "Complete Reports" [level=3] [ref=e200]
+          - paragraph [ref=e201]: Laporan lengkap untuk admin dan vendor dengan export Excel/PDF
+        - link "Realtime Messenger Chat realtime antar vendor, warehouse, dan driver dengan notifikasi instan" [ref=e202] [cursor=pointer]:
+          - /url: /antrian
+          - generic [ref=e203]:
+            - img [ref=e205]
+            - heading "Realtime Messenger" [level=3] [ref=e207]
+          - paragraph [ref=e208]: Chat realtime antar vendor, warehouse, dan driver dengan notifikasi instan
+        - link "Driver GPS Tracking Pantau posisi kendaraan secara realtime untuk estimasi kedatangan yang lebih akurat" [ref=e209] [cursor=pointer]:
+          - /url: /antrian
+          - generic [ref=e210]:
+            - img [ref=e212]
+            - heading "Driver GPS Tracking" [level=3] [ref=e215]
+          - paragraph [ref=e216]: Pantau posisi kendaraan secara realtime untuk estimasi kedatangan yang lebih akurat
+        - link "Organization Management Kelola multi organisasi, warehouse, dan struktur operasional dalam satu platform" [ref=e217] [cursor=pointer]:
+          - /url: /antrian
+          - generic [ref=e218]:
+            - img [ref=e220]
+            - heading "Organization Management" [level=3] [ref=e224]
+          - paragraph [ref=e225]: Kelola multi organisasi, warehouse, dan struktur operasional dalam satu platform
+        - link "Member Access Control Role-based access control untuk admin, vendor, dan driver" [ref=e226] [cursor=pointer]:
+          - /url: /antrian
+          - generic [ref=e227]:
+            - img [ref=e229]
+            - heading "Member Access Control" [level=3] [ref=e234]
+          - paragraph [ref=e235]: Role-based access control untuk admin, vendor, dan driver
+        - link "Gate Operational Control Kontrol operasional gate secara realtime termasuk open/close, maintenance, dan overload control" [ref=e236] [cursor=pointer]:
+          - /url: /antrian
+          - generic [ref=e237]:
+            - img [ref=e239]
+            - heading "Gate Operational Control" [level=3] [ref=e242]
+          - paragraph [ref=e243]: Kontrol operasional gate secara realtime termasuk open/close, maintenance, dan overload control
+        - link "Smart Notification & Alerts Notifikasi otomatis untuk keterlambatan, perubahan slot, dan kondisi operasional penting" [ref=e244] [cursor=pointer]:
+          - /url: /antrian
+          - generic [ref=e245]:
+            - img [ref=e247]
+            - heading "Smart Notification & Alerts" [level=3] [ref=e250]
+          - paragraph [ref=e251]: Notifikasi otomatis untuk keterlambatan, perubahan slot, dan kondisi operasional penting
+        - link "Global Rules Engine Pengaturan aturan global seperti delay tolerance, booking policy, dan operational rules" [ref=e252] [cursor=pointer]:
+          - /url: /antrian
+          - generic [ref=e253]:
+            - img [ref=e255]
+            - heading "Global Rules Engine" [level=3] [ref=e256]
+          - paragraph [ref=e257]: Pengaturan aturan global seperti delay tolerance, booking policy, dan operational rules
+        - link "Driver Operations Module Dashboard khusus driver untuk check-in, arrival confirmation, dan instruksi gate" [ref=e258] [cursor=pointer]:
+          - /url: /antrian
+          - generic [ref=e259]:
+            - img [ref=e261]
+            - heading "Driver Operations Module" [level=3] [ref=e266]
+          - paragraph [ref=e267]: Dashboard khusus driver untuk check-in, arrival confirmation, dan instruksi gate
+        - link "Multi-Tenancy Dukungan multi-tenant dengan isolasi data per perusahaan" [ref=e268] [cursor=pointer]:
+          - /url: /antrian
+          - generic [ref=e269]:
+            - img [ref=e271]
+            - heading "Multi-Tenancy" [level=3] [ref=e274]
+          - paragraph [ref=e275]: Dukungan multi-tenant dengan isolasi data per perusahaan
+        - link "Unlimited Vendor Users Tidak ada batasan jumlah user vendor dengan role-based access" [ref=e276] [cursor=pointer]:
+          - /url: /antrian
+          - generic [ref=e277]:
+            - img [ref=e279]
+            - heading "Unlimited Vendor Users" [level=3] [ref=e284]
+          - paragraph [ref=e285]: Tidak ada batasan jumlah user vendor dengan role-based access
+        - link "Warehouse Lock Settings Pengaturan kunci per warehouse untuk maintenance atau downtime" [ref=e286] [cursor=pointer]:
+          - /url: /antrian
+          - generic [ref=e287]:
+            - img [ref=e289]
+            - heading "Warehouse Lock Settings" [level=3] [ref=e292]
+          - paragraph [ref=e293]: Pengaturan kunci per warehouse untuk maintenance atau downtime
+        - link "Auto Efficient Time Picker Sistem rekomendasi waktu booking otomatis berdasarkan efisiensi" [ref=e294] [cursor=pointer]:
+          - /url: /antrian
+          - generic [ref=e295]:
+            - img [ref=e297]
+            - heading "Auto Efficient Time Picker" [level=3] [ref=e300]
+          - paragraph [ref=e301]: Sistem rekomendasi waktu booking otomatis berdasarkan efisiensi
+        - link "Unlimited Warehouse Creation Tambah warehouse tanpa batas dengan konfigurasi fleksibel" [ref=e302] [cursor=pointer]:
+          - /url: /antrian
+          - generic [ref=e303]:
+            - img [ref=e305]
+            - heading "Unlimited Warehouse Creation" [level=3] [ref=e307]
+          - paragraph [ref=e308]: Tambah warehouse tanpa batas dengan konfigurasi fleksibel
+        - link "Vehicle Type Rules Aturan khusus berdasarkan tipe kendaraan untuk waktu bongkar muat" [ref=e309] [cursor=pointer]:
+          - /url: /antrian
+          - generic [ref=e310]:
+            - img [ref=e312]
+            - heading "Vehicle Type Rules" [level=3] [ref=e315]
+          - paragraph [ref=e316]: Aturan khusus berdasarkan tipe kendaraan untuk waktu bongkar muat
+        - link "Smart Queue Positioning Penempatan otomatis dengan smart check before/after di antrian" [ref=e317] [cursor=pointer]:
+          - /url: /antrian
+          - generic [ref=e318]:
+            - img [ref=e320]
+            - heading "Smart Queue Positioning" [level=3] [ref=e330]
+          - paragraph [ref=e331]: Penempatan otomatis dengan smart check before/after di antrian
+        - link "Canceled Inventory Management Kelola booking canceled dan kembalikan ke antrian dengan smart positioning" [ref=e332] [cursor=pointer]:
+          - /url: /antrian
+          - generic [ref=e333]:
+            - img [ref=e335]
+            - heading "Canceled Inventory Management" [level=3] [ref=e340]
+          - paragraph [ref=e341]: Kelola booking canceled dan kembalikan ke antrian dengan smart positioning
+    - generic [ref=e344]:
+      - generic [ref=e345]:
+        - img [ref=e347]
+        - generic [ref=e352]:
+          - paragraph [ref=e353]: Warehouse Queue System
+          - paragraph [ref=e354]: PT Catur Sukses Internasional
+      - generic [ref=e355]:
+        - paragraph [ref=e356]: © 2026 — Sistem Manajemen Antrian Vendor v2.1
+        - paragraph [ref=e357]: Terintegrasi & Teroptimasi untuk Operasional Logistik
+  - generic [ref=e362] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e363]:
+      - img [ref=e364]
+    - generic [ref=e367]:
+      - button "Open issues overlay" [ref=e368]:
+        - generic [ref=e369]:
+          - generic [ref=e370]: "1"
+          - generic [ref=e371]: "2"
+        - generic [ref=e372]:
+          - text: Issue
+          - generic [ref=e373]: s
+      - button "Collapse issues badge" [ref=e374]:
+        - img [ref=e375]
+  - alert [ref=e377]
+```
