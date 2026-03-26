@@ -19,7 +19,6 @@ import { UpdateBookingDto } from './dto/update-booking.dto';
 import { ResponseReportsBookingDto } from './dto/response-reports-boking.dto';
 import { ResponseDashboardBookingDto } from './dto/response-dashboard-booking.dto';
 import { MoveTraceService } from 'src/move-trace/move-trace.service';
-import Holidays from 'date-holidays';
 
 @Injectable()
 export class BookingWarehouseService {
@@ -100,10 +99,12 @@ export class BookingWarehouseService {
   ) {
     const { arrivalTime, dockId } = updateDto;
 
+    // Pastikan menggunakan cara import yang aman dari error sebelumnya
+    const Holidays = require('date-holidays');
     const holidays = new Holidays('ID'); // ID untuk Indonesia
 
     // 1.2 cek hari libur nasional
-    const isHoliday = holidays.isHoliday(updateDto.arrivalTime);
+    const isHoliday = holidays?.isHoliday(updateDto.arrivalTime);
     if (isHoliday) {
       throw new BadRequestException(
         `Tanggal ${updateDto.arrivalTime.toLocaleDateString('id-ID')} adalah hari libur nasional: ${isHoliday[0]?.name || 'Libur'}`,

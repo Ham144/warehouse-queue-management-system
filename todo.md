@@ -95,6 +95,5 @@ start 12/11/2025
 Menentukan durasi bongkar mobil =
 vehicle.durasiBongkar × (0.3 + (1 − 0.3) × loadPercent/100)
 
-
 sulit :
 [] fix: droppable canceled inventory masih belum sempurna

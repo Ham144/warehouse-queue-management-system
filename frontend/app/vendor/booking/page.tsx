@@ -141,7 +141,7 @@ export default function BookingPage() {
     onSuccess: () => {
       setIsBookCompleted(true);
       toast.success("Booking berhasil dibuat");
-      window.location.href = "/vendor/booking";
+      window.location.href = "/antrian/vendor/booking";
     },
     onError: (error: any) => {
       toast.error(error?.response?.data?.message || "Gagal membuat booking");
@@ -377,7 +377,7 @@ export default function BookingPage() {
   useEffect(() => {
     if (isBookCompleted) {
       // Reset URL jika booking completed
-      router.replace("/vendor/booking");
+      router.replace("/antrian/vendor/booking");
     }
   }, [isBookCompleted, router]);
 
@@ -1009,7 +1009,7 @@ export default function BookingPage() {
             Booking Anda telah berhasil dibuat
           </p>
           <button
-            onClick={() => router.push("/vendor/booking")}
+            onClick={() => router.push("/antrian/vendor/booking")}
             className="btn btn-primary w-full"
           >
             Buat Booking Baru

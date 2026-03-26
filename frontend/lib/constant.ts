@@ -81,6 +81,7 @@ export interface DashboardState {
       predictedIntensity: number;
     };
   };
+  
   alerts: Array<{
     id: string;
     type: "OVERDUE" | "NO_SHOW" | "DOCK_BLOCKED" | "SLA_BREACH";
