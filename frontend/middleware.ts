@@ -31,11 +31,13 @@ export function middleware(req: NextRequest) {
     "/admin/settings",
   ];
 
+  // Path yang bisa diakses semua role (setelah login)
+  const SHARED_PATHS = ["/documentation"];
+
   // 1. Jalur Bebas Hambatan (Public)
   if (pathname === "/antrian" || pathname.startsWith("/login")) {
     return NextResponse.next();
   }
-
   // 2. Helper Redirect
   const redirectToLogin = () => {
     // Karena pakai basePath: '/antrian', "/" ini akan mengarah ke domain.com/antrian/
@@ -69,7 +71,11 @@ export function middleware(req: NextRequest) {
 
     if (!role) return redirectToLogin();
 
-    // 4. Role-Based Access Control (RBAC)
+    // 4. Shared paths - semua role yang sudah login boleh akses
+    const isSharedPath = SHARED_PATHS.some((p) => pathname.startsWith(p));
+    if (isSharedPath) return NextResponse.next();
+
+    // 5. Role-Based Access Control (RBAC)
     if (!am_i_vendor) {
       if (role === ROLE.ADMIN_ORGANIZATION) return NextResponse.next();
 
@@ -97,6 +103,6 @@ export function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|csi-logo.png|login|forgot-password|forbidden|unauthorized|docs).*)",
+    "/((?!_next/static|_next/image|favicon.ico|csi-logo.png|login|forgot-password|forbidden|unauthorized|documentation|docs).*)",
   ],
 };

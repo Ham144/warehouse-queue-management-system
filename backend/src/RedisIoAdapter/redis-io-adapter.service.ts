@@ -17,7 +17,9 @@ export class RedisIoAdapter extends IoAdapter {
   }
 
   createIOServer(port: number, options?: ServerOptions): any {
-    const server = super.createIOServer(port, options);
+    // kita set path Socket.io ke /api/socket.io agar sinkron dengan Nginx backend proxy
+    const opts = { ...options, path: '/api/socket.io/' }; 
+    const server = super.createIOServer(port, opts as any);
 
     if (this.adapterConstructor) {
       server.adapter(this.adapterConstructor);

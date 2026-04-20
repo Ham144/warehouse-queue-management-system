@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Suspense, useState } from "react";
+import React, { Suspense, useState, useEffect } from "react";
 import {
   Clock,
   Truck,
@@ -10,6 +10,9 @@ import {
   Package,
   Wifi,
   WifiOff,
+  History,
+  Activity,
+  ChevronRight,
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { id } from "date-fns/locale";
@@ -27,6 +30,7 @@ import QueueDetailModal from "@/components/admin/QueueDetailModal";
 import MyWarehouseActionModal from "@/components/admin/my-warehouse-action-modal";
 import { toast } from "sonner";
 import Loading from "@/components/shared-common/Loading";
+import Skeleton from "@/components/shared-common/Skeleton";
 
 // Types
 export interface DashboardState {
@@ -43,7 +47,15 @@ export interface DashboardState {
   dockStatuses: Array<{
     dockId: string;
     dockName: string;
-    status: "IDLE" | "IN_PROGRESS" | "COMPLETED" | "BLOCKED";
+    status:
+      | "IDLE"
+      | "IN_PROGRESS"
+      | "COMPLETED"
+      | "BLOCKED"
+      | "SEDANG MEMBONGKAR"
+      | "SIBUK/ISTIRAHAT"
+      | "TIDAK AKTIF"
+      | "KOSONG";
     bookingCode?: string;
     vendorName?: string;
     estimatedFinishTime?: string;
@@ -116,11 +128,20 @@ const DashboardAdmin = () => {
     userInfo?.role == ROLE.ADMIN_ORGANIZATION ||
     userInfo?.role == ROLE.ADMIN_GUDANG;
 
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   //main
   const { data: dashboardState, isLoading } = useQuery({
     queryKey: ["dashboard"],
     queryFn: async () => await BookingApi.adminWarehouseDashboard(),
     enabled: isAdmin,
+    refetchInterval: 30000, // Refresh every 30 seconds for real-time feel
   });
 
   const [selectedBookingId, setSelectedBookingId] = useState<string | null>(
@@ -134,306 +155,339 @@ const DashboardAdmin = () => {
         locale: id,
       });
     } catch {
-      return "Invalid date";
+      return "Baru saja";
     }
   };
 
   // Summary cards data
-  const summaryCards = [
+  const mainMetrics = [
     {
-      metric: "Total Semua Booking",
+      metric: "Total Booking Hari Ini",
       value: dashboardState?.summaryMetrics?.totalBookingsToday,
-      icon: <Package className="h-5 w-5" />,
+      icon: <Package className="h-4 w-4" />,
       status: "normal" as const,
     },
     {
-      metric: "Booking Butuh Konfirmasi hari ini",
+      metric: "Menunggu Kedatangan",
       value: dashboardState?.summaryMetrics?.pending,
-      icon: <Package className="h-5 w-5" />,
+      icon: <Clock className="h-4 w-4" />,
       status: "normal" as const,
     },
     {
-      metric: "Telah Datang",
+      metric: "Driver Telah Tiba",
       value: dashboardState?.summaryMetrics?.activeQueue,
-      icon: <Truck className="h-5 w-5" />,
+      icon: <Truck className="h-4 w-4" />,
       status:
-        dashboardState?.summaryMetrics.activeQueue > 20
-          ? "warning"
+        (dashboardState?.summaryMetrics?.activeQueue || 0) > 15
+          ? ("warning" as const)
           : ("normal" as const),
     },
     {
-      metric: "Belum Juga Datang",
+      metric: "Terlambat Tiba (No Show)",
       value: dashboardState?.summaryMetrics.delayedBookings,
-      icon: <AlertTriangle className="h-5 w-5" />,
+      icon: <AlertTriangle className="h-4 w-4" />,
       status:
-        dashboardState?.summaryMetrics.delayedBookings > 5
-          ? "critical"
+        (dashboardState?.summaryMetrics.delayedBookings || 0) > 5
+          ? ("critical" as const)
           : ("warning" as const),
     },
+  ];
+
+  const subMetrics = [
     {
-      metric: "Telah Selesai Hari ini",
+      metric: "Selesai",
       value: dashboardState?.summaryMetrics.completedToday,
-      icon: <CheckCircle className="h-5 w-5" />,
+      icon: <CheckCircle className="h-4 w-4" />,
       status: "normal" as const,
     },
-
     {
-      metric: "Persentase Utilisasi Warehouse anda",
+      metric: "Utilisasi Gudang",
       value: `${dashboardState?.summaryMetrics.dockUtilizationPercent}%`,
-      icon: <Building className="h-5 w-5" />,
+      icon: <Activity className="h-4 w-4" />,
       status:
-        dashboardState?.summaryMetrics.dockUtilizationPercent > 85
-          ? "warning"
+        (dashboardState?.summaryMetrics.dockUtilizationPercent || 0) > 85
+          ? ("warning" as const)
           : ("normal" as const),
-      tooltip: `Dock Utilization dihitung berdasarkan beban operasional tertinggi pada setiap dock, lalu dirata-ratakan ke seluruh dock.
-Status aktif memiliki bobot berbeda (Unloading = 100%, In Progress = 80%, Finished/canceled = 0%)`,
+      tooltip:
+        "Beban kerja dock rata-rata : Unloading (100%), In Progress (80%).",
     },
     {
-      metric: "Waktu Rata-Rata UNLOADING",
+      metric: "Rata-rata Bongkar",
       value: `${dashboardState?.summaryMetrics.avgProcessingMinutes}m`,
-      icon: <Clock className="h-5 w-5" />,
+      icon: <History className="h-4 w-4" />,
       status:
-        dashboardState?.summaryMetrics.avgProcessingMinutes > 45
-          ? "warning"
+        (dashboardState?.summaryMetrics.avgProcessingMinutes || 0) > 45
+          ? ("warning" as const)
           : ("normal" as const),
     },
   ];
 
   if (isLoading) {
     return (
-      <div className="flex container justify-center items-center w-full min-h-screen">
-        <span className="loading loading-ring loading-lg"></span>
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 md:p-8">
+        <div className="flex justify-between items-center mb-8">
+          <div className="space-y-2">
+            <Skeleton className="h-8 w-64" />
+            <Skeleton className="h-4 w-96" />
+          </div>
+          <Skeleton className="h-10 w-40" />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          {[1, 2, 3, 4].map((i) => (
+            <Skeleton key={i} className="h-32 w-full rounded-xl" />
+          ))}
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <Skeleton className="h-[500px] w-full rounded-xl" />
+          <Skeleton className="h-[500px] lg:col-span-2 w-full rounded-xl" />
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col   bg-gray-50 dark:bg-gray-900 p-4 md:p-6 overflow-y-auto max-h-96">
-      <div role="alert" className="alert  alert-error w-full bg-red-200">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="stroke-current shrink-0 h-6 w-6"
-          fill="none"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-          />
-        </svg>
-        <span>
-          Page ini sedang dalam pengembangan, beberapa belum disempurkan.
-        </span>
-      </div>
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-            Today Admin Dashboard
-          </h1>
-          <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
-            Real-time dashboard for warehouse operations management
-          </p>
-        </div>
-
-        <div className="flex items-center space-x-4 mt-4 md:mt-0">
-          <div className="flex items-center space-x-2">
-            {dashboardState?.connection.isConnected ? (
-              <Wifi className="h-4 w-4 text-green-500" />
-            ) : (
-              <WifiOff className="h-4 w-4 text-red-500" />
-            )}
-            <span className="text-sm text-gray-500 dark:text-gray-400">
-              {dashboardState?.connection.isConnected
-                ? "Connected"
-                : "Disconnected"}
-            </span>
-          </div>
-
-          <div className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
-            <Clock className="h-4 w-4" />
-            <span>
-              Last updated:{" "}
-              {formatRelativeTime(dashboardState?.summaryMetrics.lastUpdated)}
-            </span>
-          </div>
-        </div>
-      </div>
-      {/* Top Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-7 gap-4 mb-6">
-        {summaryCards?.map((card, index) => (
-          <SummaryCard
-            key={index}
-            metric={card.metric}
-            value={card.value}
-            status={card.status}
-            tooltip={card.tooltip}
-          />
-        ))}
-      </div>
-
-      {/* Main Dashboard Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-        {/* Dock Status Overview */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-          <div className="p-5 border-b border-gray-200 dark:border-gray-700">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-                Dock Status Overview
-              </h2>
-              <a
-                href="/admin/queue"
-                className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
-              >
-                Manage Today's Queue →
-              </a>
+    <div className="min-h-screen bg-[#F8FAFC] dark:bg-gray-950 font-sans text-gray-900 dark:text-gray-100 transition-colors duration-300">
+      {/* Dynamic Header with Glassmorphism */}
+      <header
+        className={`sticky top-0 z-40 w-full transition-all duration-300 ${scrolled ? "bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-sm border-b border-gray-200 dark:border-gray-800" : "bg-transparent"}`}
+      >
+        <div className="max-w-[1600px] mx-auto px-4 md:px-8 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+              Operations Control
+            </h1>
+            <div className="flex items-center gap-2 mt-1">
+              <div className="flex items-center gap-1.5 px-2 py-0.5 bg-blue-50 dark:bg-blue-900/20 rounded-md">
+                <Building className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
+                <span className="text-xs font-bold text-blue-700 dark:text-blue-300 uppercase letter tracking-wider">
+                  {userInfo?.homeWarehouse?.name} Warehouse
+                </span>
+              </div>
+              <span className="text-gray-300 dark:text-gray-700">|</span>
+              <p className="text-gray-500 dark:text-gray-400 text-xs font-medium">
+                Monitoring Rangkuman Laporan Singkat Gudang Anda
+              </p>
             </div>
           </div>
-          <div className="p-5">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
+
+          <div className="flex items-center gap-4 bg-white dark:bg-gray-900 p-2 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-50 dark:bg-gray-800">
+              {dashboardState?.connection.isConnected ? (
+                <div className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                </div>
+              ) : (
+                <div className="h-2 w-2 rounded-full bg-red-500"></div>
+              )}
+              <span className="text-[11px] font-bold uppercase tracking-widest text-gray-600 dark:text-gray-300">
+                {dashboardState?.connection.isConnected
+                  ? "Live Sync"
+                  : "Sync Error"}
+              </span>
+            </div>
+
+            <div className="flex items-center gap-2 text-xs font-medium text-gray-500 dark:text-gray-400">
+              <Clock className="h-4 w-4 opacity-70" />
+              <span>
+                Updated{" "}
+                {formatRelativeTime(dashboardState?.summaryMetrics.lastUpdated)}
+              </span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main className="max-w-[1600px] mx-auto px-4 md:px-8 py-8 space-y-8 pb-20">
+        {/* Metrics Grid */}
+        <section className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {mainMetrics.map((card, index) => (
+              <SummaryCard
+                key={index}
+                metric={card.metric}
+                value={card.value}
+                status={card.status}
+                icon={card.icon}
+              />
+            ))}
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {subMetrics.map((card, index) => (
+              <SummaryCard
+                key={index}
+                metric={card.metric}
+                value={card.value}
+                status={card.status}
+                icon={card.icon}
+                tooltip={card.tooltip}
+              />
+            ))}
+          </div>
+        </section>
+
+        {/* Operational View */}
+        <section className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Dock Status: Visualizing the warehouse floor */}
+          <div className="lg:col-span-1 space-y-4">
+            <div className="flex items-center justify-between px-2">
+              <h2 className="text-lg font-bold flex items-center gap-2">
+                <Activity className="text-blue-500" size={20} /> Warehouse Gates
+              </h2>
+              <a
+                href="/antrian/admin/queue"
+                className="group text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1 transition-all"
+              >
+                Manage Queue{" "}
+                <ChevronRight
+                  size={14}
+                  className="group-hover:translate-x-0.5 transition-transform"
+                />
+              </a>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {dashboardState?.dockStatuses?.map((statusData) => (
-                <DockStatusSection dock={statusData} />
+                <DockStatusSection key={statusData.dockId} dock={statusData} />
               ))}
             </div>
           </div>
-        </div>
 
-        {/* Queue Snapshot */}
-        <div className="bg-white col-span-2 dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-          <div className="p-5 border-b border-gray-200 dark:border-gray-700">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-                Queue Snapshot
+          {/* Queue Snapshot: Actionable insights */}
+          <div className="lg:col-span-2 space-y-4">
+            <div className="flex items-center justify-between px-2">
+              <h2 className="text-lg font-bold flex items-center gap-2 text-gray-800 dark:text-gray-100">
+                <History className="text-amber-500" size={20} /> Priority Queue
+                Snapshot
               </h2>
               <a
-                href="/admin/my-warehouse"
-                className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
+                href="/antrian/admin/my-warehouse"
+                className="group text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1 transition-all"
               >
-                View All Queue Logs →
+                Full History{" "}
+                <ChevronRight
+                  size={14}
+                  className="group-hover:translate-x-0.5 transition-transform"
+                />
               </a>
             </div>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-              Next 5 bookings in queue
-            </p>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-              <thead className="bg-gray-50 dark:bg-gray-700">
-                <tr>
-                  <th className="px-5 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                    Gate
-                  </th>
-                  <th className="px-5 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                    Booking Code
-                  </th>
-                  <th className="px-5 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                    Plat
-                  </th>
-                  <th className="px-5 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                    Vendor
-                  </th>
-                  <th className="px-5 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                    Arrival Time
-                  </th>
-                  <th className="px-5 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                    Actual Arrival
-                  </th>
-                  <th className="px-5 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                    Duration
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                {dashboardState?.queueSnapshot &&
-                dashboardState.queueSnapshot.length > 0 ? (
-                  dashboardState.queueSnapshot
-                    .slice(0, 5)
-                    .map((booking, index) => (
-                      <QueueTableRow
-                        key={booking.id || booking.code || index}
-                        booking={booking}
-                        onClick={() => {
-                          setSelectedBookingId(booking.id);
-                          (
-                            document.getElementById(
-                              "my-warehouse-action-modal",
-                            ) as HTMLDialogElement
-                          )?.showModal();
-                        }}
-                      />
-                    ))
-                ) : (
-                  <tr>
-                    <td
-                      colSpan={5}
-                      className="px-5 py-4 text-center text-sm text-gray-500 dark:text-gray-400"
-                    >
-                      Belum ada antrian untuk hari ini.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
 
-      {/* KPI Charts & Busy Time */}
-      <div className="grid grid-cols-1 gap-6 mb-6">
-        {/* KPI Charts */}
-        <div className="lg:col-span-2">
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-            <div className="p-5 border-b border-gray-200 dark:border-gray-700">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-                Real-time KPI Charts
-              </h2>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                Last 4 hours performance
-              </p>
-            </div>
-            <div className="p-5">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {dashboardState?.kpiData?.queueLengthTimeline && (
-                  <SparklineChart
-                    data={dashboardState?.kpiData?.queueLengthTimeline}
-                    title="Queue Length Trend"
-                    color="blue"
-                  />
-                )}
-                <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-                  <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-3">
-                    Dock Throughput
-                  </h3>
-                  <div className="space-y-3">
-                    {dashboardState?.kpiData?.dockThroughput.map(
-                      (item, index) => (
-                        <div
-                          key={index}
-                          className="flex items-center justify-between"
-                        >
-                          <span className="text-sm text-gray-600 dark:text-gray-300">
-                            {item.dock}
-                          </span>
-                          <div className="flex items-center">
-                            <span className="font-medium text-gray-900 dark:text-white mr-2">
-                              {item.completed}
-                            </span>
-                            <span className="text-xs text-gray-500 dark:text-gray-400">
-                              bookings
-                            </span>
+            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="min-w-full">
+                  <thead>
+                    <tr className="bg-gray-50/50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-800">
+                      <th className="px-5 py-4 text-left text-[10px] font-bold text-gray-500 uppercase tracking-widest">
+                        Gate
+                      </th>
+                      <th className="px-5 py-4 text-left text-[10px] font-bold text-gray-500 uppercase tracking-widest">
+                        Booking Code
+                      </th>
+                      <th className="px-5 py-4 text-left text-[10px] font-bold text-gray-500 uppercase tracking-widest">
+                        Truck Info
+                      </th>
+                      <th className="px-5 py-4 text-left text-[10px] font-bold text-gray-500 uppercase tracking-widest">
+                        Vendor
+                      </th>
+                      <th className="px-5 py-4 text-left text-[10px] font-bold text-gray-500 uppercase tracking-widest">
+                        Schedule
+                      </th>
+                      <th className="px-5 py-4 text-left text-[10px] font-bold text-gray-500 uppercase tracking-widest">
+                        Real Arrival
+                      </th>
+                      <th className="px-5 py-4 text-right text-[10px] font-bold text-gray-500 uppercase tracking-widest">
+                        Est. Duration
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-50 dark:divide-gray-800">
+                    {dashboardState?.queueSnapshot &&
+                    dashboardState.queueSnapshot.length > 0 ? (
+                      dashboardState.queueSnapshot
+                        .slice(0, 5)
+                        .map((booking, index) => (
+                          <QueueTableRow
+                            key={booking.id || booking.code || index}
+                            booking={booking}
+                            onClick={() => {
+                              setSelectedBookingId(booking.id);
+                              (
+                                document.getElementById(
+                                  "my-warehouse-action-modal",
+                                ) as HTMLDialogElement
+                              )?.showModal();
+                            }}
+                          />
+                        ))
+                    ) : (
+                      <tr>
+                        <td colSpan={7} className="px-5 py-20 text-center">
+                          <div className="flex flex-col items-center gap-3">
+                            <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-full">
+                              <Package className="h-8 w-8 text-gray-300" />
+                            </div>
+                            <p className="text-sm font-medium text-gray-400">
+                              Belum ada antrian yang dijadwalkan hari ini.
+                            </p>
                           </div>
-                        </div>
-                      ),
+                        </td>
+                      </tr>
                     )}
-                  </div>
-                </div>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
-        </div>
-      </div>
+        </section>
+
+        {/* Analytics Section */}
+        <section className="space-y-4">
+          <h2 className="text-lg font-bold flex items-center gap-2">
+            <Activity className="text-emerald-500" size={20} /> Performance
+            Analytics
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {dashboardState?.kpiData?.queueLengthTimeline && (
+              <SparklineChart
+                data={dashboardState?.kpiData?.queueLengthTimeline}
+                title="Antrian 4 Jam Terakhir"
+                color="blue"
+              />
+            )}
+
+            <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm">
+              <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-6">
+                Throughput Per Gate
+              </h3>
+              <div className="space-y-4">
+                {dashboardState?.kpiData?.dockThroughput.map((item, index) => (
+                  <div key={index} className="space-y-1.5">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-bold text-gray-700 dark:text-gray-300">
+                        {item.dock}
+                      </span>
+                      <span className="font-mono text-gray-500">
+                        {item.completed} comp.
+                      </span>
+                    </div>
+                    <div className="h-1.5 w-full bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-emerald-500 transition-all duration-1000"
+                        style={{
+                          width: `${Math.min(100, (item.completed / 15) * 100)}%`,
+                        }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
       <QueueDetailModal
         selectedBookingId={selectedBookingId || ""}
         setSelectedBookingId={setSelectedBookingId}
@@ -443,7 +497,7 @@ Status aktif memiliki bobot berbeda (Unloading = 100%, In Progress = 80%, Finish
       <Suspense fallback={<Loading />}>
         <MyWarehouseActionModal
           key={"MyWarehouseActionModal"}
-          onModifyAndConfirm={() => toast.info("fitur belum terhubung")}
+          onModifyAndConfirm={() => toast.info("Fitur sedang dihubungkan")}
           selectedBooking={dashboardState?.queueSnapshot.find(
             (booking) => booking.id === selectedBookingId,
           )}

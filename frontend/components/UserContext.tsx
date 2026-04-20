@@ -9,7 +9,7 @@ interface UserContextType {
   userInfo: UserInfo | null;
   setUserInfo: (userInfo: UserInfo | null) => void;
   loadingUser: boolean;
-  socket: Socket | null
+  socket: Socket | null;
 }
 
 const UserContext = createContext<UserContextType | null>(null);
@@ -33,14 +33,20 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     fetchUser();
   }, []);
 
-  // SOCKET LIFECYCLE 
+  // SOCKET LIFECYCLE
   useEffect(() => {
     if (!userInfo) {
       setSocket(null);
       return;
     }
 
-    const socketInstance = io(BASE_URL, {
+    // Parse the BASE_URL so we can handle proxy subpaths correctly
+    const url = new URL(BASE_URL, window.location.origin);
+    const origin = url.origin;
+    const basePath = url.pathname === "/" ? "" : url.pathname;
+
+    const socketInstance = io(origin, {
+      path: `${basePath}/api/socket.io/`,
       auth: {
         username: userInfo.username,
       },
@@ -68,12 +74,11 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-
 export function useUserInfo(): {
   userInfo: UserInfo | UserApp | null;
   loadingUser: boolean;
   setUserInfo: (userInfo: UserInfo | UserApp | null) => void;
-  socket: Socket | null
+  socket: Socket | null;
 } {
   const context = useContext(UserContext);
   if (!context) {
@@ -83,6 +88,6 @@ export function useUserInfo(): {
     userInfo: UserInfo | UserApp | null;
     loadingUser: boolean;
     setUserInfo: (userInfo: UserInfo | UserApp | null) => void;
-    socket: Socket | null
+    socket: Socket | null;
   };
 }

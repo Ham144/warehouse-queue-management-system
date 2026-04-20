@@ -277,7 +277,7 @@ export default function ReportsPage() {
   return (
     <Suspense fallback={<Loading />}>
       <div className=" bg-gradient-to-br from-gray-50 to-gray-100 ">
-        <main className="overflow-y-auto px-3 max-h-screen pb-7">
+        <main className="overflow-y-auto px-3 py-12 max-h-screen ">
           <div className="space-y-8">
             {/* Header with enhanced design */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-200/50">

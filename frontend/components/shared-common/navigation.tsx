@@ -390,7 +390,7 @@ export default function Navigation() {
                           {/* Warehouse Switcher */}
                           <div
                             tabIndex={0}
-                            className="flex items-center gap-x-2 px-3 py-2 bg-white/80 backdrop-blur-sm border border-gray-200 rounded-xl hover:border-green-300 hover:shadow-lg transition-all duration-300 cursor-pointer group md:min-w-[160px] "
+                            className="flex items-center gap-x-2 px-3 py-2 bg-white/80 backdrop-blur-sm border border-gray-200 rounded-xl hover:border-green-300 hover:shadow-lg transition-all duration-300 cursor-pointer group md:min-w-[160px]"
                           >
                             <WarehouseIcon className="w-4 h-4 text-green-500 flex-shrink-0" />
                             <div className="flex-1 min-w-0 max-xs:hidden ">
@@ -405,7 +405,7 @@ export default function Navigation() {
                             <ChevronDown className="w-4 h-4 text-gray-400 group-hover:text-green-500 transition-colors duration-200" />
                           </div>
 
-                          <ul className="dropdown-content z-[1] menu p-2 shadow-2xl bg-white rounded-xl w-80 mt-2 border border-gray-100 overflow-y-auto max-h-[400px]">
+                          <ul className="dropdown-content z-[1] menu p-2 shadow-2xl bg-white rounded-xl lg:w-[30vw] mt-2 border border-gray-100 overflow-y-auto max-h-[400px]">
                             {warehouseAccess?.length > 0 &&
                               warehouseAccess?.map((warehouse: Warehouse) => (
                                 <li key={warehouse.id}>

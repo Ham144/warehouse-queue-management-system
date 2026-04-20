@@ -35,9 +35,9 @@ const BookingRow = ({ booking, setSelectedBookingId }: BookingRowProps) => {
       }`}
     >
       {/* Booking Code */}
-      <td className="px-6 py-4 whitespace-nowrap">
+      <td className="px-4 py-2.5 whitespace-nowrap">
         <div>
-          <div className="text-sm font-bold py-3 text-gray-900 lg:w-24 text-wrap">
+          <div className="text-sm font-bold text-gray-900 lg:w-24 text-wrap">
             {booking.code}
             {booking.notes && (
               <div
@@ -59,9 +59,9 @@ const BookingRow = ({ booking, setSelectedBookingId }: BookingRowProps) => {
       </td>
 
       {userInfo.role != ROLE.ADMIN_VENDOR && (
-        <td className="px-6 py-4 whitespace-nowrap">
+        <td className="px-4 py-2.5 whitespace-nowrap">
           <div>
-            <div className="text-sm font-bold py-3 text-gray-900 lg:w-40">
+            <div className="text-sm font-bold text-gray-900 lg:w-40">
               {booking?.driver?.vendorName}
             </div>
           </div>
@@ -69,14 +69,14 @@ const BookingRow = ({ booking, setSelectedBookingId }: BookingRowProps) => {
       )}
 
       {/* Vehicle & Driver */}
-      <td className="px-6 py-4">
+      <td className="px-4 py-2.5">
         <div className="flex items-center">
-          <div className="flex-shrink-0 h-10 w-10 bg-blue-100 rounded-lg flex items-center justify-center">
-            <span className="text-blue-600 font-bold">
+          <div className="flex-shrink-0 h-8 w-8 bg-blue-100 rounded-lg flex items-center justify-center">
+            <span className="text-blue-600 text-xs font-bold">
               {booking.Vehicle?.brand?.charAt(0) || "V"}
             </span>
           </div>
-          <div className="ml-4">
+          <div className="ml-3">
             <div className="text-sm font-medium text-gray-900">
               {booking.Vehicle?.brand || "N/A"}
               <span className="ml-2 text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded">
@@ -104,8 +104,8 @@ const BookingRow = ({ booking, setSelectedBookingId }: BookingRowProps) => {
       )}
 
       {/* Schedule */}
-      <td className="px-6 py-4">
-        <div className="text-sm">
+      <td className="px-4 py-2.5">
+        <div className="text-[13px]">
           <div className="font-medium text-gray-900">
             Target Bongkar:{" "}
             {new Date(booking.arrivalTime).toLocaleDateString("id-ID", {
@@ -145,7 +145,7 @@ const BookingRow = ({ booking, setSelectedBookingId }: BookingRowProps) => {
       </td>
 
       {/* Duration */}
-      <td className="px-4 py-3">
+      <td className="px-4 py-2.5">
         <div className="text-sm">
           {booking.Vehicle?.durasiBongkar ? (
             <div className="space-y-1.5">
@@ -181,7 +181,7 @@ const BookingRow = ({ booking, setSelectedBookingId }: BookingRowProps) => {
       </td>
 
       {/* Dock */}
-      <td className="px-6 py-4 whitespace-nowrap">
+      <td className="px-4 py-2.5 whitespace-nowrap">
         <div className="text-sm">
           <span className="inline-flex items-center px-3 py-1 rounded-lg bg-gray-100 text-gray-800 text-sm font-medium">
             🏗️ {booking.Dock?.name || "N/A"}
@@ -190,8 +190,8 @@ const BookingRow = ({ booking, setSelectedBookingId }: BookingRowProps) => {
       </td>
 
       {/* Status */}
-      <td className="px-6 py-4 whitespace-nowrap">
-        <div className="flex w-28 flex-col gap-1">
+      <td className="px-4 py-2.5 whitespace-nowrap">
+        <div className="flex w-24 flex-col gap-1">
           <div
             className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium ${getStatusBadgeColor(
               booking.status
@@ -204,8 +204,8 @@ const BookingRow = ({ booking, setSelectedBookingId }: BookingRowProps) => {
       </td>
 
       {/* Organization */}
-      <td className="px-6 py-4">
-        <div className="text-sm w-24">
+      <td className="px-4 py-2.5">
+        <div className="text-sm w-20">
           <button
             onClick={() => {
               setSelectedBookingId(booking.id);
@@ -215,9 +215,9 @@ const BookingRow = ({ booking, setSelectedBookingId }: BookingRowProps) => {
                 ) as HTMLDialogElement
               )?.showModal();
             }}
-            className="btn"
+            className="btn btn-sm btn-ghost hover:bg-blue-50 hover:text-blue-600"
           >
-            <LucideSettings2 />
+            <LucideSettings2 size={18} />
           </button>
         </div>
       </td>

@@ -284,7 +284,6 @@ const DraggableBookingCard = ({
                           e.stopPropagation();
                           onActualArrived();
                         }}
-                        title="Batalkan booking ini"
                         className="p-1.5 rounded-md hover:bg-teal-50 hover:text-teal-600 transition-colors group"
                         type="button"
                       >
@@ -343,8 +342,8 @@ const DraggableBookingCard = ({
                     new Date(
                       // Bungkus string ini ke dalam new Date() dulu
                       new Date(booking.actualStartTime).getTime() +
-                        booking.Vehicle.durasiBongkar * 60000
-                    )
+                        booking.Vehicle.durasiBongkar * 60000,
+                    ),
                   )
                 : "-"}
             </span>

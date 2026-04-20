@@ -36,6 +36,7 @@ import {
   Building2,
   MapPin,
   MessageCircle,
+  BookA,
 } from "lucide-react";
 import Link from "next/link";
 import { Suspense, useEffect, useState } from "react";
@@ -338,6 +339,13 @@ export default function HomePage() {
                     : userInfo?.role === ROLE.DRIVER_VENDOR
                       ? "Lihat Rencana"
                       : "Mulai Order"}
+              </Link>
+              <Link
+                href={"/documentation"}
+                className="btn btn-lg bg-slate-200 text-blue-900 hover:bg-gray-100 border-0 font-semibold px-8 gap-2"
+              >
+                <BookA className="w-5 h-5" />
+                Dokumentasi
               </Link>
             </div>
           </div>

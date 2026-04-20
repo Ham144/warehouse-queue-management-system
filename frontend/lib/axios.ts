@@ -86,10 +86,14 @@ axiosInstance.interceptors.response.use(
         // Cek apakah di browser environment
         if (typeof window !== "undefined") {
           const currentPath = window.location.pathname;
+          
+          // JANGAN REDIRECT JIKA DI HALAMAN DOKUMENTASI
+          const isAtDocumentation = currentPath.includes("/documentation");
+
           const isOnLogin =
             currentPath === "/antrian" || currentPath === "/antrian/";
 
-          if (!isOnLogin) {
+          if (!isOnLogin && !isAtDocumentation) {
             try {
               const cookieNames = ["access_token", "refresh_token"];
               const paths = ["/antrian", "/"];

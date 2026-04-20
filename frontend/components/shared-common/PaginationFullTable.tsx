@@ -12,7 +12,7 @@ interface Props {
 
 const PaginationFullTable = ({ isLoading, data, filter, setFilter }: Props) => {
   return !isLoading && data?.length > 0 ? (
-    <div className="flex items-center justify-between mt-6 bg-white rounded-lg border border-gray-200 p-4">
+    <div className="flex items-center justify-between mt-3 bg-white rounded-lg border border-gray-200 p-4">
       <button
         onClick={() => {
           if (filter.page > 1) {

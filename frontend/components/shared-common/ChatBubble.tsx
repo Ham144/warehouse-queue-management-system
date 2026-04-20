@@ -324,6 +324,10 @@ function ChatBubble() {
     }
   }, [searchParams]);
 
+  if (!userInfo) {
+    return null;
+  }
+
   if (!isOpen) {
     return (
       <button

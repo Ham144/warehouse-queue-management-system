@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import ConfirmationWithInput from "../shared-common/ConfirmationWithInput";
 import {
   ArrowRight,
+  Check,
   Crosshair,
   Edit2,
   MessageCircleCode,
@@ -110,8 +111,6 @@ const MyWarehouseActionModal = ({
     <>
       <dialog id="my-warehouse-action-modal" className="modal">
         <div className="modal-box w-full max-w-md p-6 bg-white rounded-2xl shadow-xl  ">
-          {/* Header */}
-
           <div className="flex items-center justify-between mb-6 ">
             <div className="flex items-center gap-3 ">
               <div className="p-2 bg-blue-100 rounded-lg">
@@ -148,6 +147,158 @@ const MyWarehouseActionModal = ({
 
           {/* Action Buttons */}
           <div className="flex flex-col gap-3 mb-6">
+            {selectedBooking?.status == BookingStatus.IN_PROGRESS &&
+              isAdmin && (
+                <button
+                  className="group  flex items-center justify-between p-4 bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-xl hover:from-blue-100 hover:to-blue-200 hover:border-blue-300 hover:shadow-md transition-all duration-200"
+                  onClick={() => {
+                    (
+                      document.getElementById(
+                        "arrival-confirmation",
+                      ) as HTMLDialogElement
+                    )?.showModal();
+                    (
+                      document.getElementById(
+                        "my-warehouse-action-modal",
+                      ) as HTMLDialogElement
+                    )?.close();
+                  }}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-white rounded-lg shadow-sm">
+                      <Crosshair />
+                    </div>
+                    <div className="text-left">
+                      <span className="font-semibold text-gray-900">
+                        Mobil Telah Datang
+                      </span>
+                      <p className="text-xs text-gray-600 mt-1">
+                        Catat Kedatangan: waktu datang sebenarnya akan tercatat
+                        sebagai actualArrivalTime
+                      </p>
+                    </div>
+                  </div>
+                  <ArrowRight className="absolute right-10" />
+                </button>
+              )}
+
+            {selectedBooking?.status == BookingStatus.PENDING ||
+              (selectedBooking?.status == BookingStatus.IN_PROGRESS &&
+                isAdmin && (
+                  <button
+                    className={`group flex items-center justify-between p-4 border rounded-xl transition-all duration-200 ${
+                      !selectedBooking?.id || !onModifyAndConfirm
+                        ? "bg-gray-100 border-gray-200 cursor-not-allowed"
+                        : "bg-gradient-to-r from-purple-50 to-purple-100 border-purple-200 hover:from-purple-100 hover:to-purple-200 hover:border-purple-300 hover:shadow-md"
+                    }`}
+                    disabled={!selectedBooking?.id || !onModifyAndConfirm}
+                    onClick={() => {
+                      if (!selectedBooking?.id || !onModifyAndConfirm) return;
+                      onModifyAndConfirm(selectedBooking.id);
+                      (
+                        document.getElementById(
+                          "my-warehouse-action-modal",
+                        ) as HTMLDialogElement
+                      )?.close();
+                    }}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`p-2 rounded-lg shadow-sm ${
+                          !selectedBooking?.id || !onModifyAndConfirm
+                            ? "bg-gray-200"
+                            : "bg-white"
+                        }`}
+                      >
+                        <Edit2 className={"w-5 h-5 text-purple-600 "} />
+                      </div>
+                      <div className="text-left">
+                        <span
+                          className={`font-semibold ${
+                            !selectedBooking?.id || !onModifyAndConfirm
+                              ? "text-gray-500"
+                              : "text-gray-900"
+                          }`}
+                        >
+                          Justify & Confirm Booking
+                        </span>
+                        <p
+                          className={`text-xs mt-1 ${
+                            !selectedBooking?.id || !onModifyAndConfirm
+                              ? "text-gray-400"
+                              : "text-gray-600"
+                          }`}
+                        >
+                          Justify / Sesuaikan ulang booking dan klik confirm
+                          untuk menjadikannya IN_PROGRESS
+                        </p>
+                      </div>
+                    </div>
+                    {!selectedBooking?.id || !onModifyAndConfirm ? (
+                      <svg
+                        className="w-5 h-5 text-gray-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                        />
+                      </svg>
+                    ) : (
+                      <svg
+                        className="w-5 h-5 text-purple-400 group-hover:text-purple-600 transition-colors"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    )}
+                  </button>
+                ))}
+            {selectedBooking?.status !== BookingStatus.FINISHED &&
+              selectedBooking?.status !== BookingStatus.CANCELED && (
+                <button
+                  className="group  flex items-center justify-between p-4 bg-gradient-to-r from-red-50 to-red-100 border border-red-200 rounded-xl hover:from-red-100 hover:to-red-200 hover:border-red-300 hover:shadow-md transition-all duration-200"
+                  onClick={() => {
+                    (
+                      document.getElementById(
+                        "cancel-confirmation",
+                      ) as HTMLDialogElement
+                    )?.showModal();
+                    (
+                      document.getElementById(
+                        "my-warehouse-action-modal",
+                      ) as HTMLDialogElement
+                    )?.close();
+                  }}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-white rounded-lg shadow-sm">
+                      <X />
+                    </div>
+                    <div className="text-left">
+                      <span className="font-semibold text-gray-900">
+                        Cancel Booking
+                      </span>
+                      <p className="text-xs text-gray-600 mt-1">
+                        Batalkan/Tolak Konfirmasi ini
+                      </p>
+                    </div>
+                  </div>
+                  <ArrowRight />
+                </button>
+              )}
+
             {selectedBooking?.status === BookingStatus.PENDING && isAdmin && (
               <button
                 className="group flex items-center justify-between p-4 bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-xl hover:from-blue-100 hover:to-blue-200 hover:border-blue-300 hover:shadow-md transition-all duration-200"
@@ -174,19 +325,7 @@ const MyWarehouseActionModal = ({
               >
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-white rounded-lg shadow-sm">
-                    <svg
-                      className="w-5 h-5 text-green-600"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
+                    <Check />
                   </div>
                   <div className="text-left">
                     <span className="font-semibold text-gray-900">
@@ -257,155 +396,6 @@ const MyWarehouseActionModal = ({
                     d="M9 5l7 7-7 7"
                   />
                 </svg>
-              </button>
-            )}
-
-            {selectedBooking?.status == BookingStatus.IN_PROGRESS &&
-              isAdmin && (
-                <button
-                  className="group  flex items-center justify-between p-4 bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-xl hover:from-blue-100 hover:to-blue-200 hover:border-blue-300 hover:shadow-md transition-all duration-200"
-                  onClick={() => {
-                    (
-                      document.getElementById(
-                        "arrival-confirmation",
-                      ) as HTMLDialogElement
-                    )?.showModal();
-                    (
-                      document.getElementById(
-                        "my-warehouse-action-modal",
-                      ) as HTMLDialogElement
-                    )?.close();
-                  }}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-white rounded-lg shadow-sm">
-                      <Crosshair />
-                    </div>
-                    <div className="text-left">
-                      <span className="font-semibold text-gray-900">
-                        Mobil Telah Datang
-                      </span>
-                      <p className="text-xs text-gray-600 mt-1">
-                        Catat Kedatangan: waktu datang sebenarnya akan tercatat
-                        sebagai actualArrivalTime
-                      </p>
-                    </div>
-                  </div>
-                  <ArrowRight className="absolute right-10" />
-                </button>
-              )}
-            {selectedBooking?.status !== BookingStatus.FINISHED &&
-              selectedBooking?.status !== BookingStatus.CANCELED && (
-                <button
-                  className="group  flex items-center justify-between p-4 bg-gradient-to-r from-red-50 to-red-100 border border-red-200 rounded-xl hover:from-red-100 hover:to-red-200 hover:border-red-300 hover:shadow-md transition-all duration-200"
-                  onClick={() => {
-                    (
-                      document.getElementById(
-                        "cancel-confirmation",
-                      ) as HTMLDialogElement
-                    )?.showModal();
-                    (
-                      document.getElementById(
-                        "my-warehouse-action-modal",
-                      ) as HTMLDialogElement
-                    )?.close();
-                  }}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-white rounded-lg shadow-sm">
-                      <X />
-                    </div>
-                    <div className="text-left">
-                      <span className="font-semibold text-gray-900">
-                        Cancel Booking
-                      </span>
-                      <p className="text-xs text-gray-600 mt-1">
-                        Batalkan/Tolak Konfirmasi ini
-                      </p>
-                    </div>
-                  </div>
-                  <ArrowRight />
-                </button>
-              )}
-            {selectedBooking?.status == BookingStatus.PENDING && isAdmin && (
-              <button
-                className={`group flex items-center justify-between p-4 border rounded-xl transition-all duration-200 ${
-                  !selectedBooking?.id || !onModifyAndConfirm
-                    ? "bg-gray-100 border-gray-200 cursor-not-allowed"
-                    : "bg-gradient-to-r from-purple-50 to-purple-100 border-purple-200 hover:from-purple-100 hover:to-purple-200 hover:border-purple-300 hover:shadow-md"
-                }`}
-                disabled={!selectedBooking?.id || !onModifyAndConfirm}
-                onClick={() => {
-                  if (!selectedBooking?.id || !onModifyAndConfirm) return;
-                  onModifyAndConfirm(selectedBooking.id);
-                  (
-                    document.getElementById(
-                      "my-warehouse-action-modal",
-                    ) as HTMLDialogElement
-                  )?.close();
-                }}
-              >
-                <div className="flex items-center gap-3">
-                  <div
-                    className={`p-2 rounded-lg shadow-sm ${
-                      !selectedBooking?.id || !onModifyAndConfirm
-                        ? "bg-gray-200"
-                        : "bg-white"
-                    }`}
-                  >
-                    <Edit2 className={"w-5 h-5 text-purple-600 "} />
-                  </div>
-                  <div className="text-left">
-                    <span
-                      className={`font-semibold ${
-                        !selectedBooking?.id || !onModifyAndConfirm
-                          ? "text-gray-500"
-                          : "text-gray-900"
-                      }`}
-                    >
-                      Justify & Confirm Booking
-                    </span>
-                    <p
-                      className={`text-xs mt-1 ${
-                        !selectedBooking?.id || !onModifyAndConfirm
-                          ? "text-gray-400"
-                          : "text-gray-600"
-                      }`}
-                    >
-                      Justify / Sesuaikan ulang booking dan klik confirm untuk
-                      menjadikannya IN_PROGRESS
-                    </p>
-                  </div>
-                </div>
-                {!selectedBooking?.id || !onModifyAndConfirm ? (
-                  <svg
-                    className="w-5 h-5 text-gray-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                    />
-                  </svg>
-                ) : (
-                  <svg
-                    className="w-5 h-5 text-purple-400 group-hover:text-purple-600 transition-colors"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                )}
               </button>
             )}
 

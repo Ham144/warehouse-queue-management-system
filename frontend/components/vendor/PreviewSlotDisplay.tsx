@@ -1353,10 +1353,10 @@ const PreviewSlotDisplay = ({
                 type="checkbox"
                 id="isAdminMode"
                 checked={isAdminMode}
-                className="checkbox  "
+                className="checkbox border"
                 onChange={() => setIsAdminMode(!isAdminMode)}
-              />
-              Admin Mode
+              />{" "}
+              Tanpa Auto Efficient
             </label>
           )}
         </div>

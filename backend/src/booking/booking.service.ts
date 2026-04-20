@@ -929,24 +929,42 @@ export class BookingWarehouseService {
       organizationName: userInfo.organizationName,
     };
 
-    if (date && weekEnd) {
-      return new BadRequestException(
+    if (
+      date &&
+      date !== 'null' &&
+      weekEnd &&
+      weekEnd !== 'null' &&
+      weekStart &&
+      weekStart !== 'null'
+    ) {
+      throw new BadRequestException(
         'filter date and weekEnd tidak dapat digunakan bersamaan',
       );
     }
 
-    if (userInfo.role == ROLE.DRIVER_VENDOR) {
-      where.driverUsername = userInfo.username;
-
-      where.arrivalTime = {
-        // Bungkus dengan new Date() agar tipenya bukan 'number'
-        gte: new Date(new Date(date).setHours(0, 0, 0, 0)),
-        lte: new Date(new Date(date).setHours(23, 59, 59, 999)),
-      };
-    }
-
     if (status && status != 'all') {
       where.status = status;
+    }
+
+    // Filter Range Tanggal (Arrival Time)
+    if (weekStart && weekStart !== 'null' && weekEnd && weekEnd !== 'null') {
+      const gteDate = new Date(weekStart);
+      const lteDate = new Date(weekEnd);
+
+      if (!isNaN(gteDate.getTime()) && !isNaN(lteDate.getTime())) {
+        where.arrivalTime = {
+          gte: new Date(gteDate.setHours(0, 0, 0, 0)),
+          lte: new Date(lteDate.setHours(23, 59, 59, 999)),
+        };
+      }
+    } else if (date && date !== 'null') {
+      const parsedDate = new Date(date);
+      if (!isNaN(parsedDate.getTime())) {
+        where.arrivalTime = {
+          gte: new Date(parsedDate.setHours(0, 0, 0, 0)),
+          lte: new Date(parsedDate.setHours(23, 59, 59, 999)),
+        };
+      }
     }
 
     if (userInfo.role == ROLE.ADMIN_VENDOR) {
@@ -1639,8 +1657,11 @@ export class BookingWarehouseService {
     const dockUtilizationPercent = Math.round(score * 100);
 
     const timeStringToMinutes = (time: string): number => {
-      const [hour, minute] = time.split(':').map(Number);
-      return hour * 60 + minute;
+      if (!time) return 0;
+      const parts = time.split(':');
+      if (parts.length < 2) return 0;
+      const [hour, minute] = parts.map(Number);
+      return (hour || 0) * 60 + (minute || 0);
     };
 
     const dockStatuses = docks.map((dock) => {
@@ -1663,13 +1684,27 @@ export class BookingWarehouseService {
         jakartaTime.getUTCHours() * 60 + jakartaTime.getUTCMinutes();
       const nowTime = jakartaTime.getTime();
 
-      const days = Object.values(Days);
+      const days = [
+        Days.MINGGU, // 0
+        Days.SENIN, // 1
+        Days.SELASA, // 2
+        Days.RABU, // 3
+        Days.KAMIS, // 4
+        Days.JUMAT, // 5
+        Days.SABTU, // 6
+      ];
+
       const todayVacant = dock?.vacants?.find((v) => {
         return Days[v.day] === days[now.getDay()];
       });
 
       if (!dock?.isActive) {
         status = 'TIDAK AKTIF';
+        return { dockId: dock.id, dockName: dock.name, status };
+      }
+
+      if (!todayVacant) {
+        status = 'DILUAR JAM KERJA';
         return { dockId: dock.id, dockName: dock.name, status };
       }
 

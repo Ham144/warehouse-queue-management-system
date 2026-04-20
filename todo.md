@@ -97,3 +97,10 @@ vehicle.durasiBongkar × (0.3 + (1 − 0.3) × loadPercent/100)
 
 sulit :
 [] fix: droppable canceled inventory masih belum sempurna
+
+[x] fix: session jangka panjang gagal diperbaharui
+[x] fix: messanger realtime notif gagal tersambung
+[x] mod: pergantian warehouse kurang lebar
+[x] mod: scroll di halaman driver belum aktiv
+[x] mod: dashboard admin sedikit poles
+[x] fix: filter tanggal di myWarehouse Bug

@@ -33,7 +33,7 @@ async function bootstrap() {
     origin:
       process.env.NODE_ENV === 'production'
         ? [process.env.FRONTEND_URL_PROD]
-        : ['http://localhost:3000', process.env.FRONTEND_URL_DEV],
+        : [process.env.FRONTEND_URL_DEV],
     credentials: true,
   });
 
@@ -41,7 +41,6 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter(), new PrismaExceptionFilter());
 
   await app.listen(3001, '0.0.0.0');
-  console.log('✓ Server listening on port 3001');
 }
 
 bootstrap().catch((error) => {
