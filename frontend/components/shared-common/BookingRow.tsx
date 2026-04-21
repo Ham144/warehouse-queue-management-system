@@ -129,7 +129,7 @@ const BookingRow = ({ booking, setSelectedBookingId }: BookingRowProps) => {
                     {
                       hour: "2-digit",
                       minute: "2-digit",
-                    }
+                    },
                   )}
                 </>
               )}
@@ -138,7 +138,15 @@ const BookingRow = ({ booking, setSelectedBookingId }: BookingRowProps) => {
           {booking.actualArrivalTime && (
             <div className="text-green-600 text-xs mt-1 font-medium">
               ✅ Actual:{" "}
-              {new Date(booking.actualArrivalTime).toLocaleTimeString("id-ID")}
+              {new Date(booking.actualArrivalTime).toLocaleTimeString("id-ID", {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}{" "}
+              -{" "}
+              {new Date(booking.actualFinishTime).toLocaleTimeString("id-ID", {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
             </div>
           )}
         </div>
@@ -184,7 +192,7 @@ const BookingRow = ({ booking, setSelectedBookingId }: BookingRowProps) => {
       <td className="px-4 py-2.5 whitespace-nowrap">
         <div className="text-sm">
           <span className="inline-flex items-center px-3 py-1 rounded-lg bg-gray-100 text-gray-800 text-sm font-medium">
-            🏗️ {booking.Dock?.name || "N/A"}
+            {booking.Dock?.name || "N/A"}
           </span>
         </div>
       </td>
@@ -194,7 +202,7 @@ const BookingRow = ({ booking, setSelectedBookingId }: BookingRowProps) => {
         <div className="flex w-24 flex-col gap-1">
           <div
             className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium ${getStatusBadgeColor(
-              booking.status
+              booking.status,
             )}`}
           >
             <span>{getStatusIcon(booking.status)}</span>
@@ -211,7 +219,7 @@ const BookingRow = ({ booking, setSelectedBookingId }: BookingRowProps) => {
               setSelectedBookingId(booking.id);
               (
                 document.getElementById(
-                  "my-warehouse-action-modal"
+                  "my-warehouse-action-modal",
                 ) as HTMLDialogElement
               )?.showModal();
             }}

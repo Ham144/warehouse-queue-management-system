@@ -4,7 +4,12 @@ import { useQuery } from "@tanstack/react-query";
 import { BookingApi } from "@/api/booking.api";
 import { useUserInfo } from "@/components/UserContext";
 import { ROLE } from "@/types/shared.type";
-import { BookOpen, BarChart3, AlertTriangle } from "lucide-react";
+import {
+  BookOpen,
+  BarChart3,
+  AlertTriangle,
+  MessageCircleWarning,
+} from "lucide-react";
 import { VendorDashboardState } from "@/types/vendor-dashboard.type";
 
 export default function VendorDashboard() {
@@ -20,11 +25,12 @@ export default function VendorDashboard() {
 
   if (!isAdminVendor) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center text-gray-600">
-          <p className="font-semibold">
-            Dashboard ini hanya untuk Admin Vendor.
-          </p>
+      <div className="flex h-screen items-center justify-center">
+        <div className="flex items-center space-x-2">
+          <MessageCircleWarning className="text-red-500" />
+          <span className="text-lg font-semibold">
+            Ini adalah menu admin vendor
+          </span>
         </div>
       </div>
     );
@@ -144,11 +150,11 @@ export default function VendorDashboard() {
                         <div className="text-xs text-gray-500 mt-1">
                           {new Date(item.arrivalTime).toLocaleTimeString(
                             "id-ID",
-                            { hour: "2-digit", minute: "2-digit" }
+                            { hour: "2-digit", minute: "2-digit" },
                           )}{" "}
                           -{" "}
                           {new Date(
-                            item.estimatedFinishTime
+                            item.estimatedFinishTime,
                           ).toLocaleTimeString("id-ID", {
                             hour: "2-digit",
                             minute: "2-digit",

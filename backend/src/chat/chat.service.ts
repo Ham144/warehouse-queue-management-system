@@ -228,8 +228,6 @@ export class ChatService {
   async cleanupRoom(roomId: string) {
     const MAX = 1000;
 
-    console.log('1% kena');
-
     const count = await this.prismaService.chat.count({
       where: { roomId },
     });

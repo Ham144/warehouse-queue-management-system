@@ -58,7 +58,7 @@ export default function LiveQueuePage() {
   const [isDragOverCanceled, setIsDragOverCanceled] = useState(false);
   const [isDragOverDelayed, setIsDragOverDelayed] = useState(false);
   const [onFloatingBooking, setOnFloatingBooking] = useState<Booking>();
-  const [height, setHeight] = useState(200); // height inventory
+  const [height, setHeight] = useState(120); // height inventory
 
   // Sensor untuk drag and drop
   const sensors = useSensors(
@@ -570,40 +570,102 @@ export default function LiveQueuePage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-50 to-blue-50/30">
       <div className="flex flex-col">
         <WarehouseSettingPreview />
-        <main className="flex-1 ">
+        <main className="flex-1 container mx-auto px-4 py-6">
           <div className="space-y-6">
             {/* Queue Grid by Dock */}
             {isLoading || loadingDocks ? (
-              <div className="flex justify-center items-center py-16">
-                <span className="loading loading-spinner loading-lg text-primary"></span>
+              <div className="flex justify-center items-center py-32">
+                <div className="flex flex-col items-center gap-3">
+                  <div className="relative">
+                    <div className="w-12 h-12 border-4 border-gray-200 rounded-full"></div>
+                    <div className="absolute top-0 left-0 w-12 h-12 border-4 border-primary rounded-full border-t-transparent animate-spin"></div>
+                  </div>
+                  <p className="text-gray-500 text-sm">Memuat data dock...</p>
+                </div>
               </div>
             ) : docks.length === 0 ? (
-              <div className="card bg-white">
-                <div className="card-body text-center">
-                  <p className="text-gray-500">Tidak ada dock tersedia</p>
+              <div className="card bg-white/80 backdrop-blur-sm shadow-xl border border-gray-100">
+                <div className="card-body text-center py-16">
+                  <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <svg
+                      className="w-8 h-8 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+                      />
+                    </svg>
+                  </div>
+                  <p className="text-gray-500 font-medium">
+                    Tidak ada dock tersedia
+                  </p>
+                  <p className="text-gray-400 text-sm">
+                    Silahkan tambah dock terlebih dahulu
+                  </p>
                 </div>
               </div>
             ) : (
-              <div className="overflow-x-auto flex min-h-screen">
-                <button
-                  disabled={dockPageStart === 0}
-                  onClick={() => {
-                    setDockPageStart((prev) => {
-                      const value = prev - 1;
-                      window.localStorage.setItem(
-                        "dockPageStart",
-                        value.toString(),
-                      );
-                      return value;
-                    });
-                  }}
-                  className="btn btn-primary mr-2 disabled:bg-slate-400"
-                >
-                  <ArrowLeft />
-                </button>
+              <div className="relative">
+                {/* Navigation Buttons - Modern Style */}
+                <div className="flex justify-center gap-3 mb-6">
+                  <button
+                    disabled={dockPageStart === 0}
+                    onClick={() => {
+                      setDockPageStart((prev) => {
+                        const value = prev - 1;
+                        window.localStorage.setItem(
+                          "dockPageStart",
+                          value.toString(),
+                        );
+                        return value;
+                      });
+                    }}
+                    className="group px-4 py-2 bg-white border border-gray-200 rounded-xl text-gray-600 hover:border-primary hover:text-primary hover:shadow-md disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 flex items-center gap-2"
+                  >
+                    <ArrowLeft
+                      size={18}
+                      className="group-hover:-translate-x-0.5 transition-transform"
+                    />
+                    <span className="hidden sm:inline">Previous</span>
+                  </button>
+
+                  <span className="px-4 py-2 text-sm text-gray-500">
+                    Page {dockPageStart + 1} of{" "}
+                    {Math.ceil(docks.length / (isDekstop ? 4 : 2))}
+                  </span>
+
+                  <button
+                    disabled={
+                      isLoading ||
+                      dockPageStart + (isDekstop ? 4 : 2) >= docks.length
+                    }
+                    className="group px-4 py-2 bg-white border border-gray-200 rounded-xl text-gray-600 hover:border-primary hover:text-primary hover:shadow-md disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 flex items-center gap-2"
+                    onClick={() =>
+                      setDockPageStart((prev) => {
+                        const value = prev + 1;
+                        window.localStorage.setItem(
+                          "dockPageStart",
+                          value.toString(),
+                        );
+                        return value;
+                      })
+                    }
+                  >
+                    <span className="hidden sm:inline">Next</span>
+                    <ArrowRight
+                      size={18}
+                      className="group-hover:translate-x-0.5 transition-transform"
+                    />
+                  </button>
+                </div>
 
                 <DndContext
                   sensors={sensors}
@@ -613,8 +675,8 @@ export default function LiveQueuePage() {
                   onDragOver={handleDragOver}
                   onDragCancel={handleDragCancel}
                 >
-                  {/* MAIN */}
-                  <div className="grid gap-3 grid-cols-2 lg:grid-cols-4 w-full ">
+                  {/* MAIN GRID */}
+                  <div className="grid gap-5 grid-cols-1 md:grid-cols-2 xl:grid-cols-4">
                     {Object.entries(filteredBookings)
                       .splice(dockPageStart, isDekstop ? 4 : 2)
                       .map(([dockId, bookingGroup]) => {
@@ -627,19 +689,16 @@ export default function LiveQueuePage() {
                         return (
                           <div
                             key={dockId}
-                            className="flex flex-col gap-y-2 border border-dashed p-1"
+                            className="flex flex-col gap-y-4 bg-white/40 backdrop-blur-sm rounded-2xl p-4 border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300"
                           >
-                            {/* Dock Header - Compact & Modern */}
+                            {/* Dock Header - Modern & Elegant */}
                             <div
-                              className={`relative px-3 py-2 cursor-pointer rounded-xl transition-all duration-300 
-    ${
-      dock?.isActive
-        ? "bg-gradient-to-r from-primary/90 to-primary/70 shadow-lg shadow-primary/20"
-        : "bg-gradient-to-r from-slate-500/80 to-slate-400/80"
-    }
-    text-white hover:shadow-md hover:scale-[1.02] active:scale-[0.99]
-    group
-  `}
+                              className={`relative overflow-hidden rounded-xl cursor-pointer transition-all duration-300 
+                                ${
+                                  dock?.isActive
+                                    ? "bg-gradient-to-r from-primary to-primary/80 shadow-lg shadow-primary/25"
+                                    : "bg-gradient-to-r from-gray-500 to-gray-400"
+                                } text-white hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] group`}
                               onClick={() => {
                                 setSelectedDockId(dock.id!);
                                 (
@@ -649,223 +708,233 @@ export default function LiveQueuePage() {
                                 )?.showModal();
                               }}
                             >
-                              {/* Header Content Grid */}
-                              <div className="flex items-center justify-between gap-2">
-                                {/* Left: Dock Info */}
-                                <div className="flex-1 min-w-0">
-                                  <div className="flex items-center gap-2 mb-1">
-                                    {/* Dock Name with Badge */}
-                                    <div className="flex items-center gap-2">
-                                      <h3 className="font-bold text-base truncate">
+                              {/* Animated gradient overlay */}
+                              <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+
+                              <div className="relative p-4">
+                                <div className="flex items-center justify-between">
+                                  {/* Left: Dock Info */}
+                                  <div className="flex-1 min-w-0">
+                                    <div className="flex items-center gap-2 mb-1">
+                                      <h3 className="font-bold text-lg truncate">
                                         {dock.name}
                                       </h3>
-                                      {/* Active Status Indicator */}
                                       <div
-                                        className={`
-            w-2 h-2 rounded-full
-            ${dock.isActive ? "bg-emerald-400 animate-pulse" : "bg-gray-300"}
-          `}
+                                        className={`w-2 h-2 rounded-full ${
+                                          dock.isActive
+                                            ? "bg-emerald-400 animate-pulse"
+                                            : "bg-gray-300"
+                                        }`}
                                       />
                                     </div>
+                                    <p className="text-xs text-white/70">
+                                      {dock.isActive ? "Active" : "Inactive"}
+                                    </p>
                                   </div>
-                                </div>
 
-                                {/* Right: Stats & Actions */}
-                                <div className="flex items-center gap-3">
-                                  {/* Queue Count with Icon */}
-                                  <div className="flex flex-col items-center">
-                                    <div className="flex items-center gap-1">
-                                      <Users className="w-3 h-3 text-white/70" />
-                                      <span className="text-sm font-bold">
-                                        {inProgressBookings.length}
+                                  {/* Right: Stats */}
+                                  <div className="flex items-center gap-3">
+                                    <div className="text-center">
+                                      <div className="flex items-center gap-1">
+                                        <Users
+                                          size={14}
+                                          className="text-white/70"
+                                        />
+                                        <span className="font-bold text-lg">
+                                          {inProgressBookings.length}
+                                        </span>
+                                      </div>
+                                      <span className="text-[10px] text-white/70 uppercase">
+                                        Queue
                                       </span>
                                     </div>
-                                    <span className="text-[9px] text-white/70 uppercase tracking-wide">
-                                      Antrian
-                                    </span>
-                                  </div>
 
-                                  {/* Vertical Divider */}
-                                  <div className="w-px h-6 bg-white/30" />
-
-                                  {/* Edit Button */}
-                                  <div
-                                    className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 
-                     transition-colors group-hover:bg-white/20"
-                                  >
-                                    <Pencil className="w-3.5 h-3.5" />
+                                    <div className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors">
+                                      <Pencil size={14} />
+                                    </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
 
-                            {/* ============================= */}
-
-                            {/* UNLOADING SECTION - Bisa menerima drop */}
-                            {/* ============================= */}
-
-                            <div className="text-xs font-semibold text-warning uppercase pb-4 ">
-                              Unloading Area
-                            </div>
-                            <SortableContainer
-                              id={`unloading-section-${dockId}`}
-                              type="dock-section"
-                              bookingStatus={BookingStatus.UNLOADING}
-                              dockId={dockId}
-                              className="space-y-2  min-h-[100px] "
-                              acceptFrom={[
-                                BookingStatus.IN_PROGRESS,
-                                BookingStatus.DELAYED,
-                                BookingStatus.CANCELED,
-                              ]}
-                            >
-                              {/* Drop Zone di atas list (untuk area kosong) */}
-                              {unloadingBookings.length === 0 ? (
-                                <SortableContainer
-                                  id={`unloading-empty-${dockId}`}
-                                  type="dock-section"
-                                  bookingStatus={BookingStatus.UNLOADING}
-                                  dockId={dockId}
-                                  acceptFrom={[
-                                    BookingStatus.IN_PROGRESS,
-                                    BookingStatus.DELAYED,
-                                  ]}
-                                  isEmptyZone={true}
-                                />
-                              ) : (
-                                <div className="space-y-2">
-                                  {unloadingBookings.map((booking: Booking) => (
-                                    <React.Fragment key={booking.id}>
-                                      {/* Drop zone sebelum booking */}
-                                      <SortableContainer
-                                        id={`before-unloading-${booking.id}`}
-                                        type="dock-section"
-                                        bookingStatus={BookingStatus.UNLOADING}
-                                        dockId={dockId}
-                                        className="h-1 my-1"
-                                        acceptFrom={[
-                                          BookingStatus.IN_PROGRESS,
-                                          BookingStatus.DELAYED,
-                                        ]}
-                                      >
-                                        {/* Booking card */}
-                                        <DraggableBookingCard
-                                          booking={booking}
-                                          onDetail={() => onDetail(booking)}
-                                          droppable={false}
-                                          onMarkFinished={() =>
-                                            handleUpdateStatus({
-                                              id: booking.id!,
-                                              status: BookingStatus.FINISHED,
-                                              actualFinishTime: new Date(),
-                                            })
-                                          }
-                                        />
-                                      </SortableContainer>
-                                    </React.Fragment>
-                                  ))}
-                                </div>
-                              )}
-                            </SortableContainer>
-
-                            {/* IN_PROGRESS SECTION - Clean dengan DropZoneLine */}
-                            <div className="space-y-2 flex-1  flex flex-col max-h-96">
-                              <div className="text-xs font-semibold text-info uppercase mb-1 mt-7">
-                                Antrian ({inProgressBookings.length})
+                            {/* UNLOADING SECTION */}
+                            <div>
+                              <div className="flex items-center gap-2 mb-3">
+                                <div className="w-1 h-4 bg-warning rounded-full"></div>
+                                <span className="text-xs font-semibold text-warning uppercase tracking-wide">
+                                  Unloading Area
+                                </span>
                               </div>
 
-                              {inProgressBookings.length === 0 ? (
-                                <SortableContainer
-                                  id={`inprogress-empty-${dockId}`}
-                                  type="dock-section"
-                                  bookingStatus={BookingStatus.IN_PROGRESS}
-                                  dockId={dockId}
-                                  className="card bg-base-200 min-h-[100px] flex items-center justify-center"
-                                  isEmptyZone={true}
-                                  acceptFrom={[
-                                    BookingStatus.IN_PROGRESS,
-                                    BookingStatus.DELAYED,
-                                    BookingStatus.CANCELED,
-                                  ]}
-                                />
-                              ) : (
-                                <div className="space-y-1 max-h-96 flex  flex-col overflow-auto">
-                                  {/* 🔥 DROP ZONE di ATAS booking PERTAMA */}
-                                  {/* <DropZoneLine
-                                    id={`drop-before-first-${dockId}`}
-                                    bookingStatus={BookingStatus.IN_PROGRESS}
+                              <SortableContainer
+                                id={`unloading-section-${dockId}`}
+                                type="dock-section"
+                                bookingStatus={BookingStatus.UNLOADING}
+                                dockId={dockId}
+                                className="space-y-2 min-h-[120px] bg-warning/5 rounded-lg p-2 transition-all"
+                                acceptFrom={[
+                                  BookingStatus.IN_PROGRESS,
+                                  BookingStatus.DELAYED,
+                                  BookingStatus.CANCELED,
+                                ]}
+                              >
+                                {unloadingBookings.length === 0 ? (
+                                  <SortableContainer
+                                    id={`unloading-empty-${dockId}`}
+                                    type="dock-section"
+                                    bookingStatus={BookingStatus.UNLOADING}
                                     dockId={dockId}
                                     acceptFrom={[
                                       BookingStatus.IN_PROGRESS,
                                       BookingStatus.DELAYED,
-                                      BookingStatus.CANCELED,
                                     ]}
-                                    className="mb-2"
-                                  /> */}
-
-                                  {inProgressBookings.map(
-                                    (booking: Booking) => (
-                                      <React.Fragment key={booking.id}>
-                                        {/* Drop zone sebelum booking */}
-                                        <SortableContainer
-                                          id={`before-inprogress-${booking.id}`}
-                                          type="dock-section"
-                                          bookingStatus={
-                                            BookingStatus.IN_PROGRESS
-                                          }
-                                          dockId={dockId}
-                                          acceptFrom={[
-                                            BookingStatus.IN_PROGRESS,
-                                            BookingStatus.DELAYED,
-                                            BookingStatus.CANCELED,
-                                          ]}
-                                          children
-                                        ></SortableContainer>
-                                        <DraggableBookingCard
-                                          booking={booking}
-                                          onDetail={() => onDetail(booking)}
-                                          onCancel={() =>
-                                            handleUpdateStatus({
-                                              id: booking.id!,
-                                              status: BookingStatus.CANCELED,
-                                            })
-                                          }
-                                          onActualArrived={() =>
-                                            confirmArrival(booking)
-                                          }
-                                        />
-                                      </React.Fragment>
-                                    ),
-                                  )}
-
-                                  {/* 🔥 DROP ZONE 'LAST' */}
-                                  <DropZoneLine
-                                    id={`drop-after-last-${dockId}`}
-                                    bookingStatus={BookingStatus.IN_PROGRESS}
-                                    dockId={dockId}
-                                    acceptFrom={[
-                                      BookingStatus.IN_PROGRESS,
-                                      BookingStatus.DELAYED,
-                                      BookingStatus.CANCELED,
-                                    ]}
+                                    isEmptyZone={true}
                                   />
+                                ) : (
+                                  <div className="space-y-2">
+                                    {unloadingBookings.map(
+                                      (booking: Booking) => (
+                                        <React.Fragment key={booking.id}>
+                                          <SortableContainer
+                                            id={`before-unloading-${booking.id}`}
+                                            type="dock-section"
+                                            bookingStatus={
+                                              BookingStatus.UNLOADING
+                                            }
+                                            dockId={dockId}
+                                            className="h-1"
+                                            acceptFrom={[
+                                              BookingStatus.IN_PROGRESS,
+                                              BookingStatus.DELAYED,
+                                            ]}
+                                          >
+                                            <DraggableBookingCard
+                                              booking={booking}
+                                              onDetail={() => onDetail(booking)}
+                                              droppable={false}
+                                              onMarkFinished={() =>
+                                                handleUpdateStatus({
+                                                  id: booking.id!,
+                                                  status:
+                                                    BookingStatus.FINISHED,
+                                                  actualFinishTime: new Date(),
+                                                })
+                                              }
+                                            />
+                                          </SortableContainer>
+                                        </React.Fragment>
+                                      ),
+                                    )}
+                                  </div>
+                                )}
+                              </SortableContainer>
+                            </div>
+
+                            {/* IN_PROGRESS SECTION */}
+                            <div className="flex-1">
+                              <div className="flex items-center justify-between mb-3">
+                                <div className="flex items-center gap-2">
+                                  <div className="w-1 h-4 bg-info rounded-full"></div>
+                                  <span className="text-xs font-semibold text-info uppercase tracking-wide">
+                                    Queue
+                                  </span>
                                 </div>
-                              )}
+                                <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
+                                  {inProgressBookings.length}
+                                </span>
+                              </div>
+
+                              <div className="bg-info/5 rounded-lg p-2 min-h-[200px] transition-all">
+                                {inProgressBookings.length === 0 ? (
+                                  <SortableContainer
+                                    id={`inprogress-empty-${dockId}`}
+                                    type="dock-section"
+                                    bookingStatus={BookingStatus.IN_PROGRESS}
+                                    dockId={dockId}
+                                    className="min-h-[180px] flex items-center justify-center"
+                                    isEmptyZone={true}
+                                    acceptFrom={[
+                                      BookingStatus.IN_PROGRESS,
+                                      BookingStatus.DELAYED,
+                                      BookingStatus.CANCELED,
+                                    ]}
+                                  >
+                                    <div className="text-center py-8">
+                                      <Users
+                                        size={32}
+                                        className="text-gray-300 mx-auto mb-2"
+                                      />
+                                      <p className="text-xs text-gray-400">
+                                        No queue
+                                      </p>
+                                    </div>
+                                  </SortableContainer>
+                                ) : (
+                                  <div className="space-y-2 max-h-[400px] overflow-y-auto custom-scrollbar">
+                                    {inProgressBookings.map(
+                                      (booking: Booking) => (
+                                        <React.Fragment key={booking.id}>
+                                          <SortableContainer
+                                            id={`before-inprogress-${booking.id}`}
+                                            type="dock-section"
+                                            bookingStatus={
+                                              BookingStatus.IN_PROGRESS
+                                            }
+                                            dockId={dockId}
+                                            acceptFrom={[
+                                              BookingStatus.IN_PROGRESS,
+                                              BookingStatus.DELAYED,
+                                              BookingStatus.CANCELED,
+                                            ]}
+                                          />
+                                          <DraggableBookingCard
+                                            booking={booking}
+                                            onDetail={() => onDetail(booking)}
+                                            onCancel={() =>
+                                              handleUpdateStatus({
+                                                id: booking.id!,
+                                                status: BookingStatus.CANCELED,
+                                              })
+                                            }
+                                            onActualArrived={() =>
+                                              confirmArrival(booking)
+                                            }
+                                          />
+                                        </React.Fragment>
+                                      ),
+                                    )}
+                                    <DropZoneLine
+                                      id={`drop-after-last-${dockId}`}
+                                      bookingStatus={BookingStatus.IN_PROGRESS}
+                                      dockId={dockId}
+                                      acceptFrom={[
+                                        BookingStatus.IN_PROGRESS,
+                                        BookingStatus.DELAYED,
+                                        BookingStatus.CANCELED,
+                                      ]}
+                                    />
+                                  </div>
+                                )}
+                              </div>
                             </div>
                           </div>
                         );
                       })}
                   </div>
-                  {/* INVENTORY SECTION - Fixed positioning dengan z-index yang tepat */}
-                  <div className="fixed left-0 right-0 bottom-0 bg-white border-t border-gray-400 shadow-lg z-10">
-                    {/* Handle untuk tarik */}
+
+                  {/* INVENTORY SECTION - Modern Drawer Style */}
+                  <div
+                    className="fixed left-0 right-0 bottom-0 bg-white/95 backdrop-blur-xl border-t border-gray-200 shadow-2xl transition-all duration-300 z-20"
+                    style={{
+                      transform: `translateY(${height === 100 ? "calc(100% - 40px)" : "0"})`,
+                    }}
+                  >
+                    {/* Handle */}
                     <div
-                      className="h-6 bg-gray-200 border-t border-gray-300 cursor-ns-resize flex justify-center items-center z-50 relative"
+                      className="h-8 bg-gradient-to-r from-gray-50 to-gray-100 border-t border-gray-200 cursor-ns-resize flex justify-center items-center hover:bg-gray-100 transition-colors group"
                       onMouseDown={(e) => {
                         const startY = e.clientY;
                         const startHeight = height;
-
-                        // PREVENT TEXT SELECTION & GHOST IMAGE
                         e.preventDefault();
                         e.stopPropagation();
 
@@ -891,54 +960,57 @@ export default function LiveQueuePage() {
                         document.addEventListener("mouseup", handleMouseUp);
                       }}
                     >
-                      <div className="w-16 h-1 bg-gray-400 rounded"></div>
+                      <div className="flex flex-col items-center gap-1">
+                        <div className="w-12 h-1 bg-gray-400 rounded-full group-hover:bg-primary transition-colors" />
+                        <span className="text-xs text-gray-400 group-hover:text-primary transition-colors">
+                          {height === 100 ? "Drag to expand" : "Drag to resize"}
+                        </span>
+                      </div>
                     </div>
-                    {/* Content - z-index lebih rendah dari handle tapi cukup untuk drop detection */}
+
+                    {/* Content */}
                     <div
                       style={{ height: `${height}px` }}
-                      className="overflow-auto  z-30"
+                      className="overflow-auto custom-scrollbar"
                     >
-                      <div className="grid grid-cols-2 gap-x-3 md:px-52">
-                        {/* DELAYED */}
-                        <div className="p-2 -m-2 flex-1">
+                      <div className="container mx-auto px-4 py-4">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                          {/* DELAYED */}
                           <FullDroppableInventory
                             bookings={delayedBookings}
                             status={BookingStatus.DELAYED}
                             title="Delayed Bookings"
-                            onDetail={(booking) => {
-                              onDetail(booking);
-                            }}
+                            onDetail={(booking) => onDetail(booking)}
                             badgeColor="badge-warning"
-                            bgColor="bg-amber-50"
+                            bgColor="bg-amber-50/80"
                             borderColor="border-amber-200"
-                            icon={<Clock className="w-5 h-5 mr-2" />}
+                            icon={
+                              <Clock className="w-5 h-5 mr-2 text-amber-600" />
+                            }
                           />
-                        </div>
 
-                        {/* CANCELED */}
-                        <div className="p-2 -m-2 flex-1">
-                          {/* 🔥 jangan dihapus pembungkus nya sangat berguna*/}
+                          {/* CANCELED */}
                           <FullDroppableInventory
                             bookings={canceledBookings}
                             status={BookingStatus.CANCELED}
                             title="Canceled Bookings"
-                            onDetail={(booking) => {
-                              onDetail(booking);
-                            }}
+                            onDetail={(booking) => onDetail(booking)}
                             badgeColor="badge-error"
-                            bgColor="bg-red-50"
+                            bgColor="bg-red-50/80"
                             borderColor="border-rose-200"
-                            icon={<Trash2 className="w-5 h-5 mr-2" />}
+                            icon={
+                              <Trash2 className="w-5 h-5 mr-2 text-red-600" />
+                            }
                           />
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  {/* DragOverlay - z-index tinggi untuk visual feedback, tapi tidak menghalangi drop detection */}
+                  {/* DragOverlay */}
                   <DragOverlay style={{ zIndex: 9999 }}>
                     {activeBooking && (
-                      <div className="card shadow-xl scale-105 rotate-1 border-primary pointer-events-none">
+                      <div className="card shadow-2xl scale-105 rotate-1 border-2 border-primary/50 pointer-events-none">
                         <DraggableBookingCard
                           booking={activeBooking}
                           draggable={false}
@@ -947,26 +1019,6 @@ export default function LiveQueuePage() {
                     )}
                   </DragOverlay>
                 </DndContext>
-
-                <button
-                  disabled={
-                    isLoading ||
-                    dockPageStart + (isDekstop ? 4 : 2) >= docks.length
-                  }
-                  className="btn btn-primary ml-2 disabled:bg-slate-400"
-                  onClick={() =>
-                    setDockPageStart((prev) => {
-                      const value = prev + 1;
-                      window.localStorage.setItem(
-                        "dockPageStart",
-                        value.toString(),
-                      );
-                      return value;
-                    })
-                  }
-                >
-                  <ArrowRight />
-                </button>
               </div>
             )}
           </div>
@@ -978,7 +1030,7 @@ export default function LiveQueuePage() {
         modalId="cancel-confirmation"
         message="Konfirmasi Pembatalan. tuliskan suatu alasan"
         onConfirm={handleCancel}
-        title={"Apakah kamu yakin akan membatalkan Booking ini? "}
+        title={"Apakah kamu yakin akan membatalkan Booking ini?"}
         input={canceledReason}
         setInput={setCanceledReason}
         key={"cancel-confirmation"}

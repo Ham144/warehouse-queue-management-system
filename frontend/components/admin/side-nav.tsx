@@ -21,7 +21,7 @@ import {
   MessageCircle,
   MapPin,
 } from "lucide-react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useUserInfo } from "../UserContext";
 import { ROLE } from "@/types/shared.type";
 
@@ -191,171 +191,193 @@ export const allMenuAndFeatures = [
 const SideNav = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
   const sidebarRef = useRef<HTMLDivElement>(null);
-
   const { userInfo } = useUserInfo();
 
+  // Helper function untuk render menu items
+  const renderMenuItem = (
+    item: any,
+    colorScheme: {
+      active: string;
+      hover: string;
+      text: string;
+      indicator: string;
+      icon: string;
+    },
+  ) => {
+    const Icon = item.icon;
+    const active = pathname === item.href;
+
+    return (
+      <Link
+        key={item.id}
+        href={item.href}
+        className={`
+          group relative flex items-center gap-3 px-3 py-3 rounded-xl mx-1 my-1
+          transition-all duration-300 ease-out
+          overflow-hidden
+          ${
+            active
+              ? colorScheme.active
+              : `${colorScheme.text} ${colorScheme.hover}`
+          }
+        `}
+      >
+        {/* Active indicator */}
+        {active && (
+          <div
+            className={`
+              absolute left-0 top-1/2 -translate-y-1/2 
+              w-1 h-8 rounded-r-full
+              ${colorScheme.indicator}
+            `}
+          />
+        )}
+
+        {/* Icon */}
+        <div
+          className={`
+            relative flex items-center justify-center
+            transition-all duration-300
+            ${
+              active
+                ? "text-white"
+                : `${colorScheme.icon} group-hover:scale-110 group-hover:rotate-3`
+            }
+          `}
+        >
+          <Icon size={20} className="flex-shrink-0" />
+        </div>
+
+        {/* Label - LANGSUNG MUNCUL saat sidebar di-hover */}
+        <span
+          className={`
+            text-sm font-medium whitespace-nowrap
+            transition-all duration-300
+            ${active ? "text-white" : colorScheme.text}
+            group-hover/sidebar:opacity-100 group-hover/sidebar:translate-x-0
+            opacity-0 -translate-x-4
+          `}
+        >
+          {item.label}
+        </span>
+      </Link>
+    );
+  };
+
   return (
-    <div className="max-h-screen  flex flex-col w-full">
+    <div className="max-h-screen flex flex-col w-full">
       <div className="flex flex-1">
-        {/* SIDEBAR - Fixed dengan efek glassy */}
+        {/* SIDEBAR - Modern dengan efek glassmorphism */}
         {userInfo?.role != ROLE.DRIVER_VENDOR && (
           <aside
             ref={sidebarRef}
             className={`
-            fixed left-0 top-13 h-screen z-20
-            bg-gradient-to-b from-emerald-50/90 to-white/90
-            backdrop-blur-lg border-r border-emerald-100/50
-            shadow-lg shadow-emerald-100/30
-            transition-all duration-500 ease-in-out
-             no-scrollbar w-16
-            before:absolute before:inset-0 
-            before:bg-gradient-to-r
-          `}
+              fixed left-0 top-13 h-screen z-20
+              bg-gradient-to-b from-white/80 via-white/70 to-white/80
+              backdrop-blur-xl
+              border-r border-white/20
+              shadow-2xl shadow-black/5
+              transition-all duration-500 ease-out
+              no-scrollbar w-16
+              hover:w-48
+              group/sidebar
+            `}
           >
+            {/* Gradient border atas yang halus */}
+            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-emerald-400/30 to-transparent"></div>
+
             {/* Navigation */}
-            <nav className="flex-1 no-scrollbar overflow-auto px-2 max-h-screen pb-32 ">
+            <nav className="flex-1 no-scrollbar overflow-auto max-h-screen pb-32 pt-4">
+              {/* Admin Menu Items */}
               {adminMenuItems
                 .filter((item) =>
                   item.roles.some((role) => userInfo?.role === role),
                 )
-                .map((item) => {
-                  const Icon = item.icon;
-                  const active = pathname === item.href;
+                .map((item) =>
+                  renderMenuItem(item, {
+                    active:
+                      "bg-gradient-to-r from-emerald-500 to-emerald-400 text-white shadow-lg shadow-emerald-500/20",
+                    hover:
+                      "hover:bg-emerald-50/60 hover:shadow-md hover:shadow-emerald-500/10",
+                    text: "text-emerald-700",
+                    indicator:
+                      "bg-gradient-to-b from-emerald-400 to-emerald-500",
+                    icon: "text-emerald-500 group-hover:text-emerald-600",
+                  }),
+                )}
 
-                  return (
-                    <Link
-                      key={item.id}
-                      href={item.href}
-                      title={item.label}
-                      className={`
-                      group flex items-center px-3 py-3 rounded-xl mx-1 my-1
-                      transition-all duration-300 relative overflow-hidden
-                      ${
-                        active
-                          ? "bg-gradient-to-r from-emerald-500 to-emerald-400 text-white shadow-md shadow-emerald-200"
-                          : "text-emerald-700 hover:bg-emerald-50/80 hover:shadow-sm"
-                      }
-                    `}
-                    >
-                      {/* Active indicator */}
-                      {active && (
-                        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-emerald-300 rounded-r-full"></div>
-                      )}
+              {/* Separator dengan efek modern */}
+              {ITOnlyMenus.length > 0 && adminMenuItems.length > 0 && (
+                <div className="relative my-3 mx-2">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-gray-200/50"></div>
+                  </div>
+                </div>
+              )}
 
-                      {/* Icon with glow effect */}
-                      <div
-                        className={`
-                      flex items-center justify-center transition-all duration-300
-                      ${
-                        active
-                          ? "text-white"
-                          : "text-emerald-500 group-hover:text-emerald-600"
-                      }
-                    `}
-                      >
-                        <Icon size={20} className="flex-shrink-0" />
-                      </div>
-                    </Link>
-                  );
-                })}
-
+              {/* IT Menu Items */}
               {ITOnlyMenus.filter((item) =>
                 item.roles.some((role) => userInfo?.role === role),
-              ).map((item) => {
-                const Icon = item.icon;
-                const active = pathname === item.href;
+              ).map((item) =>
+                renderMenuItem(item, {
+                  active:
+                    "bg-gradient-to-r from-blue-500 to-blue-400 text-white shadow-lg shadow-blue-500/20",
+                  hover:
+                    "hover:bg-blue-50/60 hover:shadow-md hover:shadow-blue-500/10",
+                  text: "text-blue-700",
+                  indicator: "bg-gradient-to-b from-blue-400 to-blue-500",
+                  icon: "text-blue-500 group-hover:text-blue-600",
+                }),
+              )}
 
-                return (
-                  <Link
-                    key={item.id}
-                    href={item.href}
-                    title={item.label}
-                    className={`
-                      group flex items-center px-3 py-3 rounded-xl mx-1 my-1
-                      transition-all duration-300 relative overflow-hidden
-                      ${
-                        active
-                          ? "bg-gradient-to-r from-blue-500 to-blue-400 text-white shadow-md shadow-blue-200"
-                          : "text-blue-700 hover:bg-blue-50/80 hover:shadow-sm"
-                      }
-                    `}
-                  >
-                    {active && (
-                      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-blue-300 rounded-r-full"></div>
-                    )}
+              {/* Separator */}
+              {vendorMenutItems.length > 0 && (
+                <div className="relative my-3 mx-2">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-gray-200/50"></div>
+                  </div>
+                </div>
+              )}
 
-                    <div
-                      className={`
-                      flex items-center justify-center transition-all duration-300
-                      ${
-                        active
-                          ? "text-white"
-                          : "text-blue-500 group-hover:text-blue-600"
-                      }
-                    `}
-                    >
-                      <Icon size={20} className="flex-shrink-0" />
-                    </div>
-                  </Link>
-                );
-              })}
-
+              {/* Vendor Menu Items */}
               {vendorMenutItems
                 .filter((item) =>
                   item.roles.some((role) => userInfo?.role === role),
                 )
-                .map((item) => {
-                  const Icon = item.icon;
-                  const active = pathname === item.href;
-
-                  return (
-                    <Link
-                      key={item.id}
-                      href={item.href}
-                      title={item.label}
-                      className={`
-                    group flex items-center px-3 py-3 rounded-xl mx-1 my-1
-                    transition-all duration-300 relative overflow-hidden
-                    ${
-                      active
-                        ? "bg-gradient-to-r from-amber-500 to-amber-400 text-white shadow-md shadow-amber-200"
-                        : "text-amber-700 hover:bg-amber-50/80 hover:shadow-sm"
-                    }
-                  `}
-                    >
-                      {active && (
-                        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-amber-300 rounded-r-full"></div>
-                      )}
-
-                      <div
-                        className={`
-                    flex items-center justify-center transition-all duration-300
-                    ${
-                      active
-                        ? "text-white"
-                        : "text-amber-500 group-hover:text-amber-600"
-                    }
-                  `}
-                      >
-                        <Icon size={20} className="flex-shrink-0" />
-                      </div>
-                    </Link>
-                  );
-                })}
+                .map((item) =>
+                  renderMenuItem(item, {
+                    active:
+                      "bg-gradient-to-r from-amber-500 to-amber-400 text-white shadow-lg shadow-amber-500/20",
+                    hover:
+                      "hover:bg-amber-50/60 hover:shadow-md hover:shadow-amber-500/10",
+                    text: "text-amber-700",
+                    indicator: "bg-gradient-to-b from-amber-400 to-amber-500",
+                    icon: "text-amber-500 group-hover:text-amber-600",
+                  }),
+                )}
             </nav>
 
-            {/* Glassy bottom effect */}
-            <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-white/50 to-transparent pointer-events-none"></div>
+            {/* Efek glassmorphism di bagian bawah */}
+            <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white/80 via-white/40 to-transparent pointer-events-none"></div>
+
+            {/* Efek blur di sisi kanan sidebar */}
+            <div className="absolute right-0 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-white/40 to-transparent"></div>
           </aside>
         )}
 
-        {/* MAIN CONTENT */}
-        <div className="w-full pl-16 overflow-hidden max-h-screen">
+        {/* MAIN CONTENT dengan transisi yang smooth */}
+        <div
+          className={`
+            w-full overflow-hidden max-h-screen
+            transition-all duration-500 ease-out
+            ${userInfo?.role != ROLE.DRIVER_VENDOR ? "pl-16" : "pl-0"}
+            group-hover/sidebar:pl-48
+          `}
+        >
           {children}
         </div>
       </div>
     </div>
   );
 };
-
 export default SideNav;

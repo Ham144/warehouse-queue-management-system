@@ -368,7 +368,17 @@ const MyWarehouseActionModal = ({
                             ✅ Actual:{" "}
                             {new Date(
                               selectedBooking.actualArrivalTime,
-                            ).toLocaleTimeString("id-ID")}
+                            ).toLocaleTimeString("id-ID", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}{" "}
+                            -{" "}
+                            {new Date(
+                              selectedBooking.actualFinishTime,
+                            ).toLocaleTimeString("id-ID", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
                           </div>
                         )}
                       </div>
