@@ -203,11 +203,8 @@ export class BookingWarehouseService {
             },
           },
           {
-            arrivalTime: {
-              gt: new Date(
-                newArrivalTime.getTime() -
-                  existingBooking.Vehicle.durasiBongkar * 60_000,
-              ),
+            estimatedFinishTime: {
+              gt: newArrivalTime, // booking lain selesai setelah booking ini mulai
             },
           },
         ],
@@ -984,10 +981,39 @@ export class BookingWarehouseService {
       where.dockId = filter.dockId;
     }
 
+    if (filter.vehicleType && filter.vehicleType !== 'all') {
+      where.Vehicle = {
+        ...(where.Vehicle as any),
+        vehicleType: filter.vehicleType,
+      };
+    }
+
+    if (filter.vendorName && filter.vendorName !== 'all') {
+      where.driver = {
+        ...(where.driver as any),
+        vendorName: {
+          equals: filter.vendorName,
+          mode: 'insensitive',
+        },
+      };
+    }
+
+    if (filter.hasArrived === 'true') {
+      where.actualArrivalTime = { not: null };
+    } else if (filter.hasArrived === 'false') {
+      where.actualArrivalTime = null;
+    }
+
     if (searchKey) {
       where.OR = [
         {
           code: {
+            contains: searchKey,
+            mode: 'insensitive',
+          },
+        },
+        {
+          notes: {
             contains: searchKey,
             mode: 'insensitive',
           },
@@ -1510,6 +1536,7 @@ export class BookingWarehouseService {
     const bookings = await this.prismaService.booking.findMany({
       where: {
         organizationName: userInfo.organizationName,
+        warehouseId: userInfo.homeWarehouseId,
         arrivalTime: {
           gte: todayStart,
           lte: todayEnd,

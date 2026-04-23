@@ -7,7 +7,7 @@ import { plainToInstance } from 'class-transformer';
 import { UpdateAppUserDto } from './dto/update-user.dto';
 import { TokenPayload } from './dto/token-payload.dto';
 import { Prisma } from '@prisma/client';
-import { Days, ROLE } from 'src/common/shared-enum';
+import { ROLE } from 'src/common/shared-enum';
 import { UploadUserDto } from './dto/upload-user.dto';
 import { Roles } from 'src/common/Role.decorator';
 

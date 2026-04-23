@@ -127,14 +127,11 @@ export class BookingforVendorService {
       );
     }
 
-    const year = arrival.getFullYear().toString().slice(-2);
-    const month = (arrival.getMonth() + 1).toString().padStart(2, '0');
-    const day = arrival.getDate().toString().padStart(2, '0');
-    const hours = arrival.getHours().toString().padStart(2, '0');
-    const minutes = arrival.getMinutes().toString().padStart(2, '0');
-    const seconds = arrival.getSeconds().toString().padStart(2, '0');
+    const randomStr = Array.from({ length: 2 }, () =>
+      String.fromCharCode(65 + Math.floor(Math.random() * 26)),
+    ).join('');
 
-    const code = `${createBookingDto.notes.slice(0, 7)}-${vehicle.brand.slice(0, 7)}-${year}${month}${day}${hours}${minutes}${seconds}`;
+    const code = `${createBookingDto.notes.slice(0, 7)}-${vehicle.brand}-${driverUsername}-${randomStr}`;
 
     //penentuan status awal
     const organizationSettings =

@@ -251,7 +251,7 @@ const DashboardAdmin = () => {
     <div className="min-h-screen bg-[#F8FAFC] dark:bg-gray-950 font-sans text-gray-900 dark:text-gray-100 transition-colors duration-300">
       {/* Dynamic Header with Glassmorphism */}
       <header
-        className={`sticky top-0 z-40 w-full transition-all duration-300 ${scrolled ? "bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-sm border-b border-gray-200 dark:border-gray-800" : "bg-transparent"}`}
+        className={`sticky top-0 w-full transition-all duration-300 ${scrolled ? "bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-sm border-b border-gray-200 dark:border-gray-800" : "bg-transparent"}`}
       >
         <div className="max-w-[1600px] mx-auto px-4 md:px-8 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>

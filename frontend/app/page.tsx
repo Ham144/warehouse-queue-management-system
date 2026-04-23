@@ -292,7 +292,7 @@ export default function HomePage() {
 
             <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
               Sistem Antrian Gudang & Manajemen
-              <span className="block text-teal-200">Unload Muatan</span>
+              <span className="block text-teal-200">Bongkar Muatan</span>
             </h1>
 
             <p className="text-xl md:text-2xl text-blue-100 max-w-3xl mx-auto mb-8 leading-relaxed">

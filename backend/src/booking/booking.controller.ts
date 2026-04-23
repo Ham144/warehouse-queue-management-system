@@ -18,6 +18,8 @@ import { UpdateBookingDto } from './dto/update-booking.dto';
 import { TokenPayload } from 'src/user/dto/token-payload.dto';
 import { BookingGateway } from './booking.gateway';
 
+import { BookingFilterDto } from './dto/booking-filter.dto';
+
 @Controller('booking')
 export class BookingController {
   constructor(
@@ -44,7 +46,7 @@ export class BookingController {
 
   @Authorization()
   @Get('/list')
-  async findAll(@Query() filter, @Auth() userInfo: any) {
+  async findAll(@Query() filter: BookingFilterDto, @Auth() userInfo: any) {
     const response = await this.bookingWarehouseService.findAll(
       filter,
       userInfo,

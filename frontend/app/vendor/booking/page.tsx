@@ -1034,24 +1034,26 @@ function BookingContent() {
             <CheckCircle className="w-12 h-12" />
           </div>
           <h2 className="text-4xl font-black text-gray-900 tracking-tight mb-4">
-            Transaksi Berhasil!
+            Berhasil Booking, Menunggu persetujuan..
           </h2>
           <p className="text-gray-500 text-lg mb-12 max-w-md mx-auto">
-            Booking Anda telah kami catat dalam sistem. Silahakan datang tepat
-            waktu sesuai jadwal.
+            Booking Anda telah berhasil kami tetapkan. Jika status Berubah
+            menjadi in-progress artinya booking disetujui, jika canceled maka
+            anda bisa booking lagi di lain waktu sesuai dengan alasan
+            cancelation yang diberikan oleh piham gudang
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button
-              onClick={() => router.push("/antrian/vendor/booking")}
-              className="px-10 py-4 bg-gray-900 text-white rounded-2xl font-black hover:bg-black transition-all hover:scale-105 active:scale-95 shadow-xl"
-            >
-              REKAPITULASI BOOKING
-            </button>
             <button
               onClick={() => window.location.reload()}
               className="px-10 py-4 bg-white border-2 border-gray-100 text-gray-900 rounded-2xl font-black hover:bg-gray-50 transition-all shadow-sm"
             >
               BUAT BARU
+            </button>
+            <button
+              onClick={() => router.push("/antrian/vendor/history")}
+              className="px-10 py-4 bg-emerald-500 text-white border-2 border-emerald-500 rounded-2xl font-black hover:bg-gray-50 transition-all shadow-sm"
+            >
+              HISTORY
             </button>
           </div>
         </div>

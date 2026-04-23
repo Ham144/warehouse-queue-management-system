@@ -28,6 +28,9 @@ export const BookingApi = {
     if (filter.sortBy) params.set("sortBy", filter.sortBy);
     if (filter.sortOrder) params.set("sortOrder", filter.sortOrder);
     if (filter.dockId) params.set("dockId", filter.dockId);
+    if (filter.vehicleType) params.set("vehicleType", filter.vehicleType);
+    if (filter.vendorName) params.set("vendorName", filter.vendorName);
+    if (filter.hasArrived) params.set("hasArrived", filter.hasArrived);
 
     const res = await axiosInstance.get("/api/booking/list", { params });
     return res.data;

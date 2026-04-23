@@ -256,6 +256,57 @@ function ChatBubble() {
         data.roomId !== selectedRoomId // bukan room yang sedang dibuka
       ) {
         playMessengerStyleSound();
+
+        // Tampilkan floating notification
+        toast.custom(
+          (t) => (
+            <div
+              onClick={() => {
+                setSelectedRecipient(data.senderId);
+                setSelectedRoomId(data.roomId || null);
+                setIsOpen(true);
+                toast.dismiss(t);
+              }}
+              className="flex items-center gap-4 bg-white/95 backdrop-blur-md p-4 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-teal-50/50 cursor-pointer hover:bg-white transition-all transform hover:scale-[1.02] active:scale-[0.98] group animate-in fade-in slide-in-from-right-8 duration-300 pointer-events-auto"
+            >
+              <div className="relative flex-shrink-0">
+                <div
+                  className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-lg shadow-teal-200/50 ${
+                    data.senderId === "system"
+                      ? "bg-gradient-to-br from-blue-500 to-indigo-600 shadow-blue-200/50"
+                      : "bg-gradient-to-br from-teal-500 to-emerald-600"
+                  }`}
+                >
+                  {data.senderId === "system" ? (
+                    <Bell className="w-6 h-6 text-white" />
+                  ) : (
+                    <User className="w-6 h-6 text-white" />
+                  )}
+                </div>
+                <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white animate-pulse"></div>
+              </div>
+              <div className="flex-1 min-w-0 pr-2">
+                <div className="flex items-center justify-between mb-0.5">
+                  <p className="font-bold text-gray-900 truncate text-sm">
+                    {data.senderId === "system"
+                      ? "Notifikasi Sistem"
+                      : data.senderId}
+                  </p>
+                  <span className="text-[10px] text-gray-400 font-medium whitespace-nowrap ml-2">
+                    Baru saja
+                  </span>
+                </div>
+                <p className="text-xs text-gray-600 line-clamp-2 leading-relaxed">
+                  {stripHtmlPreview(data.message)}
+                </p>
+              </div>
+            </div>
+          ),
+          {
+            duration: 5000,
+            position: "bottom-right",
+          },
+        );
       }
     };
 

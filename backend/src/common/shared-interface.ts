@@ -16,4 +16,6 @@ export interface BookingFilter {
   sortBy?: 'updatedAt' | 'bookingDate';
   sortOrder?: 'asc' | 'desc';
   dockId?: string;
+  vehicleType?: string; // filter by Vehicle.vehicleType
+  hasArrived?: string; // 'true' | 'false' - actualArrivalTime not null vs null
 }
