@@ -69,7 +69,6 @@ export interface DashboardState {
     avgWaitingTime: Array<{ time: string; minutes: number }>;
     dockThroughput: Array<{ dock: string; completed: number }>;
   };
-
   busyTimeData: {
     currentBusyWindow?: {
       from: string;

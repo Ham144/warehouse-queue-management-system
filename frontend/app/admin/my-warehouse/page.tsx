@@ -1,7 +1,12 @@
 "use client";
 import React, { Suspense, useEffect, useState } from "react";
-import { Filter, Calendar, Search, X, Pencil } from "lucide-react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Calendar, Search, X, Pencil } from "lucide-react";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  keepPreviousData,
+} from "@tanstack/react-query";
 import { WarehouseApi } from "@/api/warehouse.api";
 import { toast } from "sonner";
 import { useUserInfo } from "@/components/UserContext";
@@ -60,6 +65,7 @@ const MyWarehousePage = () => {
       return await BookingApi.getAllBookingsList(filter);
     },
     enabled: !!userInfo,
+    placeholderData: keepPreviousData,
   });
 
   const { data: vendors } = useQuery({
@@ -241,7 +247,7 @@ const MyWarehousePage = () => {
     };
   }, [socket, queryClient, userInfo?.homeWarehouse?.id]);
 
-  if (isLoading || isLoadingBookings) {
+  if (isLoading || (isLoadingBookings && !bookings)) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <span className="loading loading-spinner loading-lg"></span>

@@ -195,7 +195,9 @@ export class BookingWarehouseService {
       where: {
         dockId: newDockId,
         id: { not: id },
-        status: { not: 'CANCELED' },
+        status: {
+          notIn: [BookingStatus.CANCELED, BookingStatus.FINISHED],
+        },
         AND: [
           {
             arrivalTime: {
