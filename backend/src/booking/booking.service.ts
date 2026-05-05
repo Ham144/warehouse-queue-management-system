@@ -196,7 +196,7 @@ export class BookingWarehouseService {
         dockId: newDockId,
         id: { not: id },
         status: {
-          notIn: [BookingStatus.CANCELED, BookingStatus.FINISHED],
+          notIn: [BookingStatus.CANCELED, BookingStatus.FINISHED, BookingStatus.UNLOADING],
         },
         AND: [
           {

@@ -18,47 +18,42 @@ import { Authorization } from 'src/common/authorization.decorator';
 export class DockController {
   constructor(private readonly dockService: DockService) {}
 
-  @Authorization('ADMIN_GUDANG', 'USER_ORGANIZATION', 'ADMIN_ORGANIZATION')
+  @Authorization('USER_ORGANIZATION', 'ADMIN_ORGANIZATION')
   @Post()
   create(@Body() createDockDto: CreateDockDto, @Auth() userInfo) {
     return this.dockService.create(createDockDto, userInfo);
   }
 
-  @Authorization('ADMIN_GUDANG', 'USER_ORGANIZATION', 'ADMIN_ORGANIZATION')
+  @Authorization('USER_ORGANIZATION', 'ADMIN_ORGANIZATION')
   @Post('bulk')
   bulkUpload(@Body() body: CreateDockDto[], @Auth() userInfo) {
     return this.dockService.bulkUpload(body, userInfo);
   }
 
   @Authorization(
-    'ADMIN_GUDANG',
     'USER_ORGANIZATION',
     'ADMIN_ORGANIZATION',
     'ADMIN_VENDOR',
+    'ADMIN_GUDANG',
   )
   @Get('/warehouse/:id')
   getDocksByWarehouseId(@Param('id') id: string) {
     return this.dockService.getDocksByWarehouseId(id);
   }
 
-  @Authorization(
-    'ADMIN_GUDANG',
-    'USER_ORGANIZATION',
-    'ADMIN_ORGANIZATION',
-    'ADMIN_VENDOR',
-  )
+  @Authorization('USER_ORGANIZATION', 'ADMIN_ORGANIZATION', 'ADMIN_VENDOR')
   @Get('/detail/:id')
   findOne(@Param('id') id: string) {
     return this.dockService.findOne(id);
   }
 
-  @Authorization('ADMIN_GUDANG', 'USER_ORGANIZATION', 'ADMIN_ORGANIZATION')
+  @Authorization('USER_ORGANIZATION', 'ADMIN_ORGANIZATION')
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateDockDto: UpdateDockDto) {
     return this.dockService.update(id, updateDockDto);
   }
 
-  @Authorization('ADMIN_GUDANG', 'USER_ORGANIZATION', 'ADMIN_ORGANIZATION')
+  @Authorization('USER_ORGANIZATION', 'ADMIN_ORGANIZATION')
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.dockService.remove(id);

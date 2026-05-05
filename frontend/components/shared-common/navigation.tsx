@@ -4,7 +4,6 @@ import {
   ChevronDown,
   LogIn,
   LogOut,
-  Truck,
   User2,
   Building2,
   Check,

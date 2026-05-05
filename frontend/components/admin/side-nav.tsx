@@ -21,7 +21,7 @@ import {
   MessageCircle,
   MapPin,
 } from "lucide-react";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { useUserInfo } from "../UserContext";
 import { ROLE } from "@/types/shared.type";
 
@@ -45,14 +45,14 @@ export const adminMenuItems = [
     label: "Gate Management",
     icon: DoorOpen,
     href: "/admin/gate",
-    roles: [ROLE.ADMIN_ORGANIZATION, ROLE.USER_ORGANIZATION, ROLE.ADMIN_GUDANG],
+    roles: [ROLE.ADMIN_ORGANIZATION, ROLE.USER_ORGANIZATION],
   },
   {
     id: "busy-times",
     label: "Busy Times",
     icon: Clock,
     href: "/admin/busy-times",
-    roles: [ROLE.ADMIN_ORGANIZATION, ROLE.USER_ORGANIZATION, ROLE.ADMIN_GUDANG],
+    roles: [ROLE.ADMIN_ORGANIZATION, ROLE.USER_ORGANIZATION],
   },
   {
     id: "reports",
@@ -66,7 +66,7 @@ export const adminMenuItems = [
     label: "Vehicles",
     icon: Truck,
     href: "/admin/vehicles",
-    roles: [ROLE.ADMIN_ORGANIZATION, ROLE.USER_ORGANIZATION, ROLE.ADMIN_GUDANG],
+    roles: [ROLE.ADMIN_ORGANIZATION, ROLE.USER_ORGANIZATION],
   },
   {
     id: "my warehouse",
