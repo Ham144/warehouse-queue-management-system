@@ -1040,7 +1040,7 @@ function BookingContent() {
             Booking Anda telah berhasil kami tetapkan. Jika status Berubah
             menjadi in-progress artinya booking disetujui, jika canceled maka
             anda bisa booking lagi di lain waktu sesuai dengan alasan
-            cancelation yang diberikan oleh piham gudang
+            cancelation yang diberikan oleh pihak gudang
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button

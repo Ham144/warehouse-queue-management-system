@@ -25,12 +25,7 @@ export class VehicleController {
     return this.vehicleService.create(createVehicleDto, userInfo);
   }
 
-  @Authorization(
-    'ADMIN_ORGANIZATION',
-
-    'USER_ORGANIZATION',
-    'ADMIN_VENDOR',
-  )
+  @Authorization('ADMIN_ORGANIZATION', 'USER_ORGANIZATION', 'ADMIN_VENDOR')
   @Get()
   findAll(
     @Query('page') page: number,

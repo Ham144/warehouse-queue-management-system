@@ -99,15 +99,11 @@ export class BookingWarehouseService {
   ) {
     const { arrivalTime, dockId } = updateDto;
 
-    // Pastikan menggunakan cara import yang aman dari error sebelumnya
-    const Holidays = require('date-holidays');
-    const holidays = new Holidays('ID'); // ID untuk Indonesia
-
     // 1.2 cek hari libur nasional
-    const isHoliday = holidays?.isHoliday(updateDto.arrivalTime);
+    const isHoliday = false;
     if (isHoliday) {
       throw new BadRequestException(
-        `Tanggal ${updateDto.arrivalTime.toLocaleDateString('id-ID')} adalah hari libur nasional: ${isHoliday[0]?.name || 'Libur'}`,
+        `Tanggal ${updateDto.arrivalTime.toLocaleDateString('id-ID')} adalah hari libur nasional'}`,
       );
     }
 
@@ -196,7 +192,11 @@ export class BookingWarehouseService {
         dockId: newDockId,
         id: { not: id },
         status: {
-          notIn: [BookingStatus.CANCELED, BookingStatus.FINISHED, BookingStatus.UNLOADING],
+          notIn: [
+            BookingStatus.CANCELED,
+            BookingStatus.FINISHED,
+            BookingStatus.UNLOADING,
+          ],
         },
         AND: [
           {

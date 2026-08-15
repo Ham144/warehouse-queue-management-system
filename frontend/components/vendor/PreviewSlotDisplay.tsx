@@ -12,7 +12,6 @@ import { normalizeDate } from "@/lib/constant";
 import { Calendar, Clock } from "lucide-react";
 import { useUserInfo } from "../UserContext";
 import { OrganizationApi } from "@/api/organization.api";
-import Holidays from "date-holidays";
 
 interface PreviewSlotDisplayProps {
   formData: Booking;
@@ -28,8 +27,6 @@ const PreviewSlotDisplay = ({
   currentBookingId,
 }: PreviewSlotDisplayProps) => {
   const [isAdminMode, setIsAdminMode] = useState(false);
-
-  const holidays = new Holidays("ID"); // ID untuk Indonesia
 
   const { userInfo, socket } = useUserInfo();
   const isAdmin =
@@ -248,10 +245,10 @@ const PreviewSlotDisplay = ({
     }
 
     // 1.2 cek hari libur nasional
-    const isHoliday = holidays.isHoliday(date);
+    const isHoliday = false
     if (isHoliday) {
       toast.error(
-        `Tanggal ${date.toLocaleDateString("id-ID")} adalah hari libur nasional: ${isHoliday[0]?.name || "Libur"}`,
+        `Tanggal ${date.toLocaleDateString("id-ID")} adalah hari libur nasional}`,
       );
       return;
     }

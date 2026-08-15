@@ -5,9 +5,11 @@ import { HttpExceptionFilter } from './common/http-exception-filter';
 import { ValidationPipe } from '@nestjs/common';
 import { PrismaExceptionFilter } from './common/PrismaException';
 import { RedisIoAdapter } from './RedisIoAdapter/redis-io-adapter.service';
+import { json, urlencoded } from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
   const redisIoAdapter = new RedisIoAdapter(app);
   await redisIoAdapter.connectToRedis();
 
@@ -21,7 +23,7 @@ async function bootstrap() {
     new ValidationPipe({
       whitelist: true, // hapus field yg tidak ada di DTO
       forbidNonWhitelisted: false, // tidak lempar error
-      transform: true, // otomatis transform payload → DTO
+      transform: true, // otomatis transform payload â†’ DTO
     }),
   );
 
@@ -39,7 +41,8 @@ async function bootstrap() {
 
   // Global error filter (opsional)
   app.useGlobalFilters(new HttpExceptionFilter(), new PrismaExceptionFilter());
-
+  app.use(json({ limit: '60mb' }));
+  app.use(urlencoded({ extended: true, limit: '60mb' }));
   await app.listen(3001, '0.0.0.0');
 }
 

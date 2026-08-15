@@ -35,9 +35,9 @@ const BookingRow = ({ booking, setSelectedBookingId }: BookingRowProps) => {
       }`}
     >
       {/* Booking Code */}
-      <td className="px-4 py-2.5 whitespace-nowrap">
+      <td className="px-4 py-2.5 min-w-32 whitespace-nowrap">
         <div>
-          <div className="text-sm font-bold text-gray-900 lg:w-24 text-wrap">
+          <div className="text-sm font-bold text-gray-900 lg:w-36 text-wrap">
             {booking.code}
             {booking.notes && (
               <div
@@ -58,10 +58,11 @@ const BookingRow = ({ booking, setSelectedBookingId }: BookingRowProps) => {
         </div>
       </td>
 
+      {/* Vendor Name (conditional) */}
       {userInfo.role != ROLE.ADMIN_VENDOR && (
         <td className="px-4 py-2.5 whitespace-nowrap">
           <div>
-            <div className="text-sm font-bold text-gray-900 lg:w-40">
+            <div className="text-sm font-bold text-gray-900 lg:w-20">
               {booking?.driver?.vendorName}
             </div>
           </div>
@@ -76,7 +77,7 @@ const BookingRow = ({ booking, setSelectedBookingId }: BookingRowProps) => {
               {booking.Vehicle?.brand?.charAt(0) || "V"}
             </span>
           </div>
-          <div className="ml-3">
+          <div className="ml-3 lg:w-28">
             <div className="text-sm font-medium text-gray-900">
               {booking.Vehicle?.brand || "N/A"}
               <span className="ml-2 text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded">
@@ -93,8 +94,9 @@ const BookingRow = ({ booking, setSelectedBookingId }: BookingRowProps) => {
         </div>
       </td>
 
+      {/* Warehouse (conditional for ADMIN_VENDOR) */}
       {userInfo.role == ROLE.ADMIN_VENDOR && (
-        <td className="px-2  py-4 whitespace-nowrap">
+        <td className="px-2 py-4 whitespace-nowrap">
           <div>
             <div className="text-sm font-bold py-3 text-gray-900 lg:w-40 flex items-center gap-x-2">
               {booking.Warehouse?.name || "N/A"} <WarehouseIcon size={16} />
@@ -104,7 +106,7 @@ const BookingRow = ({ booking, setSelectedBookingId }: BookingRowProps) => {
       )}
 
       {/* Schedule */}
-      <td className="px-4 py-2.5">
+      <td className="px-4 py-2.5 lg:w-40">
         <div className="text-[13px]">
           <div className="font-medium text-gray-900">
             Target Bongkar:{" "}
@@ -157,12 +159,9 @@ const BookingRow = ({ booking, setSelectedBookingId }: BookingRowProps) => {
         <div className="text-sm">
           {booking.Vehicle?.durasiBongkar ? (
             <div className="space-y-1.5">
-              {/* Durasi Badge */}
               <div className="inline-flex items-center px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-medium">
                 {booking.Vehicle.durasiBongkar} min
               </div>
-
-              {/* Status Waktu */}
               {booking.status === BookingStatus.IN_PROGRESS && (
                 <div className="text-xs">
                   <div
@@ -211,7 +210,7 @@ const BookingRow = ({ booking, setSelectedBookingId }: BookingRowProps) => {
         </div>
       </td>
 
-      {/* Organization */}
+      {/* Action Button (Organization) */}
       <td className="px-4 py-2.5">
         <div className="text-sm w-20">
           <button

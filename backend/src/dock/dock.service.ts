@@ -269,15 +269,15 @@ export class DockService {
           },
         },
       });
-      if (bookings.length) {
-        const bookingCodes = bookings.map((booking) => booking.code).join(', ');
-        throw new BadRequestException(
-          'Ada booking yang sedang berlangsung di dock ini hari ini : ' +
-            bookingCodes,
-        );
-      }
+      // if (bookings.length) {
+      //   const bookingCodes = bookings.map((booking) => booking.code).join(', ');
+      //   throw new BadRequestException(
+      //     'Ada booking yang sedang berlangsung di dock ini hari ini : ' +
+      //       bookingCodes,
+      //   );
+      // }
     }
-
+    
     try {
       await this.prismaService.dock.update({
         where: {

@@ -7,6 +7,7 @@ import { TokenPayload } from 'src/user/dto/token-payload.dto';
 import { BookingStatus, Days } from 'src/common/shared-enum';
 import { MoveTraceService } from 'src/move-trace/move-trace.service';
 import { ResponseVendorDashboardDto } from './dto/response-vendor-dashboard.dto';
+import { DockBusyTime } from '@prisma/client';
 
 @Injectable()
 export class BookingforVendorService {
@@ -14,6 +15,53 @@ export class BookingforVendorService {
     private readonly prismaService: PrismaService,
     private readonly moveTraceService: MoveTraceService,
   ) {}
+
+  private mapDayIndexToEnum(dayIndex: number): string {
+    const dayMapping = [
+      Days.MINGGU,
+      Days.SENIN,
+      Days.SELASA,
+      Days.RABU,
+      Days.KAMIS,
+      Days.JUMAT,
+      Days.SABTU,
+    ];
+    return dayMapping[dayIndex];
+  }
+
+  private getLocalDayIndex(date: Date): number {
+    const jakartaTime = new Date(date.getTime() + 7 * 60 * 60 * 1000);
+    return jakartaTime.getUTCDay();
+  }
+
+  private toLocalMinutes(date: Date): number {
+    const jakartaTime = new Date(date.getTime() + 7 * 60 * 60 * 1000);
+    return jakartaTime.getUTCHours() * 60 + jakartaTime.getUTCMinutes();
+  }
+
+  private isBookingConflict(bookingDate: Date, busy: DockBusyTime): boolean {
+    const dayIndex = this.getLocalDayIndex(bookingDate);
+
+    if (busy.recurring === 'MONTHLY') {
+      const jakartaTime = new Date(bookingDate.getTime() + 7 * 60 * 60 * 1000);
+      return jakartaTime.getUTCDate() === busy.recurringStep;
+    }
+
+    if (busy.recurring === 'WEEKLY') {
+      const bookingDayStr = this.mapDayIndexToEnum(dayIndex);
+      return busy.recurringCustom.includes(bookingDayStr);
+    }
+
+    if (busy.recurring === 'DAILY') {
+      const start = new Date(busy.from);
+      const diffDays = Math.floor(
+        (bookingDate.getTime() - start.getTime()) / (1000 * 60 * 60 * 24),
+      );
+      return diffDays >= 0 && diffDays % busy.recurringStep === 0;
+    }
+
+    return true;
+  }
 
   async create(createBookingDto: CreateBookingDto, userInfo: TokenPayload) {
     const {
@@ -36,9 +84,8 @@ export class BookingforVendorService {
       },
     });
 
-    const bookingFrom = arrivalTime.getHours() * 60 + arrivalTime.getMinutes();
-    const bookingTo =
-      estimatedFinishTime.getHours() * 60 + estimatedFinishTime.getMinutes();
+    const bookingFrom = this.toLocalMinutes(arrivalTime);
+    const bookingTo = this.toLocalMinutes(estimatedFinishTime);
 
     const busyTimes = await this.prismaService.dockBusyTime.findMany({
       where: { dockId },
@@ -47,30 +94,17 @@ export class BookingforVendorService {
     const overLapIdx = busyTimes.findIndex((busy) => {
       const busyFrom = HHMM_to_minutes(busy.from);
       const busyTo = HHMM_to_minutes(busy.to);
-      return busyFrom < bookingTo && busyTo > bookingFrom;
+      const isTimeOverlap = busyFrom < bookingTo && busyTo > bookingFrom;
+
+      if (!isTimeOverlap) return false;
+
+      return this.isBookingConflict(arrivalTime, busy);
     });
 
-    if (overLapIdx != -1) {
-      if (
-        busyTimes[overLapIdx].recurring === 'MONTHLY' &&
-        busyTimes[overLapIdx].recurringStep === arrivalTime.getDate()
-      ) {
-        throw new BadRequestException(
-          `Waktu terkait overlap busy time ${busyTimes[overLapIdx].reason}, antara ${busyTimes[overLapIdx].from} sampai ${busyTimes[overLapIdx].to}`,
-        );
-      } else if (
-        busyTimes[overLapIdx].recurring === 'WEEKLY' &&
-        busyTimes[overLapIdx].recurringCustom.includes(
-          Days[arrivalTime.getDay()],
-        )
-      ) {
-        throw new BadRequestException(
-          `Waktu terkait overlap busy time ${busyTimes[overLapIdx].reason}, antara ${busyTimes[overLapIdx].from} sampai ${busyTimes[overLapIdx].to}`,
-        );
-      } else
-        throw new BadRequestException(
-          `Waktu terkait overlap busy time ${busyTimes[overLapIdx].reason}, antara ${busyTimes[overLapIdx].from} sampai ${busyTimes[overLapIdx].to}`,
-        );
+    if (overLapIdx !== -1) {
+      throw new BadRequestException(
+        `Waktu terkait overlap busy time ${busyTimes[overLapIdx].reason}, antara ${busyTimes[overLapIdx].from} sampai ${busyTimes[overLapIdx].to}`,
+      );
     }
 
     //cek apakah boleh allowedTypes
