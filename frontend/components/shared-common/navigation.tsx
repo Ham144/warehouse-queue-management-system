@@ -145,47 +145,31 @@ export default function Navigation() {
 
               <div className=" px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16 lg:h-20">
-                  {/* Logo & Brand Section - Modern dengan efek hover */}
+                  {/* Logo & Brand Section */}
                   <div
                     className="group flex items-center gap-3 cursor-pointer"
                     onClick={() => redirect("/")}
                   >
-                    {/* Logo Container dengan animasi */}
-                    <div className="relative">
-                      <div className="absolute inset-0 bg-gradient-to-r from-teal-100 to-white-400 rounded-2xl blur-xl opacity-0 group-hover:opacity-50 transition-opacity duration-500" />
-                      <div className="relative bg-gradient-to-br from-teal-100 via-white-500 to-white-600 p-2.5 rounded-2xl shadow-lg group-hover:shadow-2xl group-hover:scale-105 transition-duration-300">
-                        <img
-                          src="/antrian/csi-logo.png"
-                          alt="CSI Logo"
-                          className="w-10 h-10 object-contain"
-                        />
-                      </div>
-                    </div>
+                    <div className="flex items-center gap-3">
+                      <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-gray-800 via-gray-900 to-gray-800 bg-clip-text text-transparent">
+                        Catur Antrian
+                      </h1>
 
-                    {/* Text Brand */}
-                    <div className="hidden lg:block">
-                      <div className="flex items-center gap-3">
-                        <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-800 via-gray-900 to-gray-800 bg-clip-text text-transparent">
-                          Catur antrian
-                        </h1>
-
-                        {/* Realtime Badge dengan animasi pulse */}
-                        <div className="relative group/badge">
-                          <div className="absolute inset-0 bg-gradient-to-r from-red-500 to-pink-500 rounded-full blur-md opacity-75 group-hover/badge:opacity-100 transition-opacity animate-pulse" />
-                          <div className="relative px-3 py-1 text-xs font-semibold text-white bg-gradient-to-r from-red-500 to-pink-500 rounded-full shadow-lg">
-                            <span className="flex items-center gap-1">
-                              <span className="relative flex h-2 w-2">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
-                              </span>
-                              REALTIME
+                      {/* Realtime Badge */}
+                      <div className="relative group/badge">
+                        <div className="absolute inset-0 bg-gradient-to-r from-red-500 to-pink-500 rounded-full blur-md opacity-75 group-hover/badge:opacity-100 transition-opacity animate-pulse" />
+                        <div className="relative px-2.5 py-0.5 sm:px-3 sm:py-1 text-[10px] sm:text-xs font-semibold text-white bg-gradient-to-r from-red-500 to-pink-500 rounded-full shadow-lg">
+                          <span className="flex items-center gap-1.5">
+                            <span className="relative flex h-2 w-2">
+                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                              <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
                             </span>
-                          </div>
+                            REALTIME
+                          </span>
                         </div>
                       </div>
                     </div>
                   </div>
-
                   {/* Search Section - Modern & Elegant */}
                   <Suspense
                     fallback={

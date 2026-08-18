@@ -82,7 +82,7 @@ const DockFormModal = ({
 
   return (
     <dialog id="DockFormModal" className="modal">
-      <div className="modal-box w-full max-w-4xl p-0 bg-white rounded-2xl overflow-hidden shadow-2xl">
+      <div className="modal-box w-full max-w-7xl p-0 bg-white rounded-2xl overflow-hidden shadow-2xl">
         {/* Header - Modern Gradient */}
         <div className="bg-gradient-to-r from-primary/10 to-primary/5 border-b border-primary/10 px-6 py-5">
           <div className="flex items-center justify-between">
@@ -120,7 +120,7 @@ const DockFormModal = ({
                 </label>
                 <input
                   type="text"
-                  className="input input-bordered w-full bg-gray-50/50 border-gray-200 focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 rounded-xl transition-all duration-200"
+                  className="input px-2 input-bordered w-full bg-gray-50/50 border-gray-200 focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 rounded-xl transition-all duration-200"
                   placeholder="Contoh: Dock A, Gate 1, Ramp B"
                   value={formData?.name || ""}
                   onChange={(e) =>
@@ -141,7 +141,7 @@ const DockFormModal = ({
                 <input
                   type="text"
                   disabled
-                  className="input input-bordered w-full bg-gray-100 border-gray-200 rounded-xl cursor-not-allowed text-gray-600"
+                  className="input px-2 input-bordered w-full bg-gray-100 border-gray-200 rounded-xl cursor-not-allowed text-gray-600"
                   value={formData?.warehouse?.name || ""}
                 />
               </div>
@@ -259,7 +259,7 @@ const DockFormModal = ({
                     ))}
                   </div>
                 )}
-
+                  
                 {/* Vehicle Types Dropdown */}
                 <div className="relative">
                   <button
@@ -298,13 +298,13 @@ const DockFormModal = ({
 
               {/* Status - Modern Toggle */}
               <div className="form-control md:col-span-2">
-                <label className="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-white rounded-xl border border-gray-200 cursor-pointer hover:border-primary/30 transition-all duration-200">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-primary/10 rounded-lg">
-                      <Activity className="w-4 h-4 text-primary" />
+                <label className="flex items-center justify-between gap-4 p-4 bg-gradient-to-r from-gray-50 to-white rounded-xl border border-gray-200 cursor-pointer hover:border-primary/30 transition-all duration-200 shadow-sm">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg shrink-0">
+                      <Activity className="w-5 h-5" />
                     </div>
-                    <div>
-                      <span className="font-semibold text-gray-700">
+                    <div className="min-w-0">
+                      <span className="font-semibold text-gray-800 block text-sm sm:text-base">
                         Status Aktif
                       </span>
                       <p className="text-xs text-gray-500 mt-0.5">
@@ -312,14 +312,19 @@ const DockFormModal = ({
                       </p>
                     </div>
                   </div>
-                  <input
-                    type="checkbox"
-                    className="toggle toggle-primary"
-                    checked={formData?.isActive ?? true}
-                    onChange={(e) =>
-                      setFormData({ ...formData, isActive: e.target.checked })
-                    }
-                  />
+
+                  {/* Toggle Switch Murni Tailwind (Pasti Terlihat) */}
+                  <div className="relative inline-flex items-center shrink-0">
+                    <input
+                      type="checkbox"
+                      className="sr-only peer"
+                      checked={formData?.isActive ?? true}
+                      onChange={(e) =>
+                        setFormData({ ...formData, isActive: e.target.checked })
+                      }
+                    />
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+                  </div>
                 </label>
               </div>
             </div>
@@ -400,7 +405,7 @@ const DockFormModal = ({
           </div>
 
           {/* Actions - Modern Footer */}
-          <div className="flex justify-end gap-3 pt-5 border-t border-gray-200">
+          <div className="flex sticky bottom-0 translate-y-6 pb-5 bg-white justify-end gap-3 pt-5 border-t border-gray-200">
             <button
               type="button"
               onClick={handleClose}
