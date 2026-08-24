@@ -55,10 +55,19 @@ Before allowing any booking or modification, the backend executes a strict valid
 * **Real-time Overlap Prevention**: Checks existing schedules to prevent double bookings.
 * **Buffer Enforcement**: Auto-injects mandatory minimum buffer intervals between truck slots.
 
+<p align="center">
+  <img src="screenshots/auto%20efficient%20time%20picker%20support.webp" width="48%" alt="Auto Efficient Time Picker Support" />
+  <img src="screenshots/busy%20time%20management.webp" width="48%" alt="Busy Time Management" />
+</p>
+
 ### 2. Live Gantt / Queue Board (Drag & Drop)
-The admin board uses `DND Kit` to move bookings between docks or status lists. Moving a item triggers:
+The admin board uses `DND Kit` to move bookings between docks or status lists. Moving an item triggers:
 * **Slot Fit Recalculation**: Backend evaluates position, shifts adjacent queues, or performs atomic **SWAP** operations if durations match.
 * **WebSocket Propagation**: Broadcasters push the update immediately to all connected warehouse monitors.
+
+<p align="center">
+  <img src="screenshots/realtime%20drag%20drop%20area.webp" width="90%" alt="Realtime Drag & Drop Queue Board" />
+</p>
 
 ### 3. Active Directory Multitenancy
 Each Tenant (Organization) can enable separate domain LDAP settings:
@@ -70,8 +79,34 @@ AD_BASE_DN="OU=Users,DC=domain,DC=com"
 ```
 Users authenticate using internal enterprise accounts, falling back to local credentials for vendor accounts.
 
+<p align="center">
+  <img src="screenshots/unique%20setup%20for%20each%20organization%20and%20active%20directory%20authentication%20support.webp" width="90%" alt="Active Directory & LDAP Authentication Setup" />
+</p>
+
 ### 4. Real-time Driver-Warehouse Chat
 Drivers and warehouse dispatchers can open persistent, authenticated rooms to coordinate unloading times, updates, or gate changes.
+
+<p align="center">
+  <img src="screenshots/realtime%20messanger.webp" width="90%" alt="Realtime Driver-Staff Messenger" />
+</p>
+
+---
+
+## 📸 System Administration & Configurations
+
+Here is a preview of the operational and organizational settings panels in WQMS:
+
+| Multi-Tenancy Organization Management | Multiple Warehouse Rules Configuration |
+| :---: | :---: |
+| ![Multi Tenancy Support](screenshots/multi-tenancy%20support.webp) | ![Multiple Warehouse & Rules](screenshots/multiple%20warehouse%20and%20multiple%20rules.webp) |
+
+| Driver Fleet & Duration Setup | Booking Approvals & History Logs |
+| :---: | :---: |
+| ![Driver & Vehicle Setup](screenshots/driver%20template%20and%20duration%20setup.webp) | ![Booking Approvals](screenshots/booking%20approval%20and%20history%20booking.webp) |
+
+| Organization Member Listings |
+| :---: |
+| ![Organization Members](screenshots/all%20members%20in%201%20organization%20management.webp) |
 
 ---
 
